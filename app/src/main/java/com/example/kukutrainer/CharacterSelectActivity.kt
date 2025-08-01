@@ -10,8 +10,5 @@ class CharacterSelectActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_character_select)
 
-        findViewById<Button>(R.id.button_to_learning_stage).setOnClickListener {
-            startActivity(Intent(this, LearningStageSelectActivity::class.java))
-        }
     }
 }

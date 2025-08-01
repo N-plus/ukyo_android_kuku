@@ -5,4 +5,5 @@
     <string name="character_2">キャラクター２</string>
     <string name="character_3">キャラクター３</string>
     <string name="select_character_prompt">キャラクターをえらんでね</string>
+    <string name="splash_tagline">未就学児でも学べる九九アプリ</string>
 </resources>

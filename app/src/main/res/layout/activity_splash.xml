@@ -4,9 +4,22 @@
     android:layout_height="match_parent"
     android:gravity="center">
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="あああああ"
-        android:textSize="24sp" />
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:text="@string/splash_tagline"
+            android:textSize="24sp" />
+    </LinearLayout>
 </FrameLayout>

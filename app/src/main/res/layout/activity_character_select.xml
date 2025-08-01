@@ -18,10 +18,18 @@
             android:orientation="vertical">
 
             <!-- 各キャラを直接並べるならインクルードでもOK -->
-            <include layout="@layout/item_character" />
-            <include layout="@layout/item_character" />
-            <include layout="@layout/item_character" />
-            <include layout="@layout/item_character" />
+            <include
+                android:id="@+id/character1"
+                layout="@layout/item_character" />
+            <include
+                android:id="@+id/character2"
+                layout="@layout/item_character" />
+            <include
+                android:id="@+id/character3"
+                layout="@layout/item_character" />
+            <include
+                android:id="@+id/character4"
+                layout="@layout/item_character" />
 
             <!-- 将来的には RecyclerView に置き換え -->
         </LinearLayout>

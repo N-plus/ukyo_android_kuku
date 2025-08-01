@@ -1,0 +1,56 @@
+package com.example.kukutrainer.data
+
+import android.content.Context
+import android.content.SharedPreferences
+
+/**
+ * Wrapper for [SharedPreferences] to persist app settings and progress.
+ */
+object PreferencesManager {
+    private const val PREF_NAME = "kuku_prefs"
+
+    private const val KEY_SELECTED_CHARACTER = "selected_character"
+    private const val KEY_SOUND_SPEED = "sound_speed"
+    private const val KEY_BGM_ON = "bgm_on"
+
+    private fun stageCompletedKey(stage: Int) = "stage_completed_" + stage
+    private fun starCountKey(stage: Int) = "star_count_" + stage
+
+    private fun prefs(context: Context): SharedPreferences =
+        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+
+    fun setSelectedCharacter(context: Context, id: Int) {
+        prefs(context).edit().putInt(KEY_SELECTED_CHARACTER, id).apply()
+    }
+
+    fun getSelectedCharacter(context: Context): Int =
+        prefs(context).getInt(KEY_SELECTED_CHARACTER, 0)
+
+    fun setStageCompleted(context: Context, stage: Int, completed: Boolean) {
+        prefs(context).edit().putBoolean(stageCompletedKey(stage), completed).apply()
+    }
+
+    fun isStageCompleted(context: Context, stage: Int): Boolean =
+        prefs(context).getBoolean(stageCompletedKey(stage), false)
+
+    fun setStarCount(context: Context, stage: Int, count: Int) {
+        prefs(context).edit().putInt(starCountKey(stage), count).apply()
+    }
+
+    fun getStarCount(context: Context, stage: Int): Int =
+        prefs(context).getInt(starCountKey(stage), 0)
+
+    fun setSoundSpeed(context: Context, speed: Float) {
+        prefs(context).edit().putFloat(KEY_SOUND_SPEED, speed).apply()
+    }
+
+    fun getSoundSpeed(context: Context): Float =
+        prefs(context).getFloat(KEY_SOUND_SPEED, 1.0f)
+
+    fun setBgmOn(context: Context, on: Boolean) {
+        prefs(context).edit().putBoolean(KEY_BGM_ON, on).apply()
+    }
+
+    fun isBgmOn(context: Context): Boolean =
+        prefs(context).getBoolean(KEY_BGM_ON, true)
+}

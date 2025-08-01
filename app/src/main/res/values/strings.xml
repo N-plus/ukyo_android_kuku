@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">KukuTrainer</string>
+    <string name="bgm">BGM</string>
     <string name="character_1">キャラクター１</string>
+    <string name="character_2">キャラクター２</string>
+    <string name="character_3">キャラクター３</string>
+    <string name="select_character_prompt">キャラクターをえらんでね</string>
 </resources>

@@ -2,13 +2,22 @@ package com.example.kukutrainer
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import android.widget.Button
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import com.example.kukutrainer.ui.theme.KukuTrainerTheme
+import com.example.kukutrainer.saveSelectedCharacter
 
-class CharacterSelectActivity : AppCompatActivity() {
+class CharacterSelectActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_character_select)
-
+        setContent {
+            KukuTrainerTheme {
+                CharacterSelectScreen { id ->
+                    saveSelectedCharacter(id)
+                    startActivity(Intent(this, MainMenuActivity::class.java))
+                    finish()
+                }
+            }
+        }
     }
 }

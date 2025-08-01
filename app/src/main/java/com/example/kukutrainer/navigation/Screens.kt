@@ -9,7 +9,10 @@ sealed class Screen(val route: String) {
         const val KEY_STAGE = "stage"
         fun createRoute(stage: Int) = "learning/$stage"
     }
-    data object Completion : Screen("completion")
+    data object Completion : Screen("completion/{stage}") {
+        const val KEY_STAGE = "stage"
+        fun createRoute(stage: Int) = "completion/$stage"
+    }
     data object QuizDifficultySelect : Screen("quiz_difficulty_select")
     data object Quiz : Screen("quiz/{difficulty}") {
         const val KEY_DIFFICULTY = "difficulty"

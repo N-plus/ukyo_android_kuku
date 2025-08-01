@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Switch
 
 @Composable
 fun SplashScreen(onFinished: (Boolean) -> Unit) {
@@ -244,18 +245,48 @@ fun LearningStageSelectScreen(navController: NavHostController) {
 
 @Composable
 fun LearningScreen(stage: Int, navController: NavHostController) {
+    val context = LocalContext.current
+    var index by remember { mutableStateOf(1) }
+
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Button(onClick = { navController.navigate(Screen.Completion.route) }) {
-            Text("Learning Stage $stage")
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            val result = stage * index
+            Text(text = stringResource(id = R.string.learning_expression_format, stage, index, result))
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(onClick = {
+                if (index < 9) {
+                    index++
+                } else {
+                    PreferencesManager.setStageCompleted(context, stage, true)
+                    val prev = PreferencesManager.getStarCount(context, stage)
+                    PreferencesManager.setStarCount(context, stage, prev + 1)
+                    navController.navigate(Screen.Completion.createRoute(stage))
+                }
+            }) {
+                Text(text = stringResource(id = R.string.next))
+            }
         }
     }
 }
 
 @Composable
-fun CompletionScreen(navController: NavHostController) {
+fun CompletionScreen(stage: Int, navController: NavHostController) {
+    val context = LocalContext.current
+    val stars = remember { PreferencesManager.getStarCount(context, stage) }
+
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Button(onClick = { navController.navigate(Screen.Home.route) }) {
-            Text("Completion")
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = stringResource(id = R.string.congratulations))
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = "${stars}★")
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(onClick = { navController.navigate(Screen.Home.route) }) {
+                Text(text = stringResource(id = R.string.back_to_home))
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { navController.navigate(Screen.Learning.createRoute(stage + 1)) }) {
+                Text(text = stringResource(id = R.string.next_stage))
+            }
         }
     }
 }
@@ -263,8 +294,18 @@ fun CompletionScreen(navController: NavHostController) {
 @Composable
 fun QuizDifficultySelectScreen(navController: NavHostController) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Button(onClick = { navController.navigate(Screen.Quiz.createRoute(1)) }) {
-            Text("Quiz Difficulty Select")
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Button(onClick = { navController.navigate(Screen.Quiz.createRoute(1)) }) {
+                Text(text = stringResource(id = R.string.easy))
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { navController.navigate(Screen.Quiz.createRoute(2)) }) {
+                Text(text = stringResource(id = R.string.normal))
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { navController.navigate(Screen.Quiz.createRoute(3)) }) {
+                Text(text = stringResource(id = R.string.hard))
+            }
         }
     }
 }
@@ -272,7 +313,7 @@ fun QuizDifficultySelectScreen(navController: NavHostController) {
 @Composable
 fun QuizScreen(difficulty: Int, navController: NavHostController) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Button(onClick = { navController.navigate(Screen.Completion.route) }) {
+        Button(onClick = { navController.navigate(Screen.Completion.createRoute(0)) }) {
             Text("Quiz Difficulty $difficulty")
         }
     }
@@ -280,8 +321,42 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
 
 @Composable
 fun SettingsScreen(navController: NavHostController) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Settings")
+    val context = LocalContext.current
+    var bgmOn by remember { mutableStateOf(PreferencesManager.isBgmOn(context)) }
+    var fast by remember { mutableStateOf(PreferencesManager.getSoundSpeed(context) >= 1f) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(text = stringResource(id = R.string.bgm), modifier = Modifier.weight(1f))
+            Switch(checked = bgmOn, onCheckedChange = {
+                bgmOn = it
+                PreferencesManager.setBgmOn(context, it)
+            })
+        }
+
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            val label = if (fast) stringResource(id = R.string.sound_speed_fast) else stringResource(id = R.string.sound_speed_slow)
+            Text(text = label, modifier = Modifier.weight(1f))
+            Switch(checked = fast, onCheckedChange = {
+                fast = it
+                PreferencesManager.setSoundSpeed(context, if (it) 1f else 0.5f)
+            })
+        }
+
+        Button(onClick = { navController.navigate(Screen.CharacterSelection.route) }) {
+            Text(text = stringResource(id = R.string.change_character))
+        }
+
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text(text = stringResource(id = R.string.language_placeholder), modifier = Modifier.weight(1f))
+            Switch(checked = false, onCheckedChange = {}, enabled = false)
+        }
     }
 }
 

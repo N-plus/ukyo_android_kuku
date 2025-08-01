@@ -18,7 +18,10 @@ fun KukuNavGraph(navController: NavHostController, startDestination: String = Sc
             val stage = backStackEntry.arguments?.getString(Screen.Learning.KEY_STAGE)?.toIntOrNull() ?: 0
             LearningScreen(stage, navController)
         }
-        composable(Screen.Completion.route) { CompletionScreen(navController) }
+        composable(Screen.Completion.route) { backStackEntry ->
+            val stage = backStackEntry.arguments?.getString(Screen.Completion.KEY_STAGE)?.toIntOrNull() ?: 0
+            CompletionScreen(stage, navController)
+        }
         composable(Screen.QuizDifficultySelect.route) { QuizDifficultySelectScreen(navController) }
         composable(Screen.Quiz.route) { backStackEntry ->
             val diff = backStackEntry.arguments?.getString(Screen.Quiz.KEY_DIFFICULTY)?.toIntOrNull() ?: 0

@@ -27,4 +27,13 @@
     <string name="sound_speed_fast">音声速度：はやい</string>
     <string name="change_character">キャラクターを再選択</string>
     <string name="language_placeholder">言語切替（準備中）</string>
+    <string name="quiz_question_format">%1$d × %2$d = ?</string>
+    <string name="quiz_correct">せいかい！</string>
+    <string name="quiz_wrong_hint">ざんねん！もういちどチャレンジしてね</string>
+    <string name="quiz_stars">スター: %1$d</string>
+    <string name="profile_title">プロフィール</string>
+    <string name="profile_total_stars">これまで獲得した星: %1$d</string>
+    <string name="profile_badges">獲得バッジ</string>
+    <string name="profile_selected_character">選択中キャラクター: %1$s</string>
+    <string name="dressup_placeholder">着せ替え機能は準備中です</string>
 </resources>

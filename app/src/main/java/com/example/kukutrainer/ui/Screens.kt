@@ -24,6 +24,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.background
 import androidx.compose.material3.Card
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.graphicsLayer
@@ -31,6 +32,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Switch
+import androidx.compose.runtime.saveable.rememberSaveable
+import kotlinx.coroutines.launch
 
 @Composable
 fun SplashScreen(onFinished: (Boolean) -> Unit) {
@@ -312,12 +315,79 @@ fun QuizDifficultySelectScreen(navController: NavHostController) {
 
 @Composable
 fun QuizScreen(difficulty: Int, navController: NavHostController) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Button(onClick = { navController.navigate(Screen.Completion.createRoute(0)) }) {
-            Text("Quiz Difficulty $difficulty")
+    val range = when (difficulty) {
+        1 -> 1..3
+        2 -> 1..6
+        else -> 1..9
+    }
+
+    var left by rememberSaveable { mutableStateOf(range.random()) }
+    var right by rememberSaveable { mutableStateOf(range.random()) }
+    var options by remember { mutableStateOf(generateOptions(left, right, range)) }
+    var feedback by remember { mutableStateOf("") }
+    var stars by rememberSaveable { mutableStateOf(0) }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    // ここで stringResource を取得（Composable コンテキスト内）
+    val correctText = stringResource(id = R.string.quiz_correct)
+    val wrongHintText = stringResource(id = R.string.quiz_wrong_hint)
+    val backText = stringResource(id = R.string.back_to_home)
+
+    fun nextQuestion() {
+        left = range.random()
+        right = range.random()
+        options = generateOptions(left, right, range)
+        feedback = ""
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        // フォーマット付きの stringResource はその都度呼び出して構わない（stars / left / right は状態）
+        Text(text = stringResource(id = R.string.quiz_stars, stars))
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = stringResource(id = R.string.quiz_question_format, left, right))
+        Spacer(modifier = Modifier.height(16.dp))
+
+        options.forEach { option ->
+            Button(
+                onClick = {
+                    if (option == left * right) {
+                        stars++
+                        feedback = correctText
+                        coroutineScope.launch {
+                            delay(800)
+                            nextQuestion()
+                        }
+                    } else {
+                        feedback = wrongHintText
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+            ) {
+                Text(text = option.toString())
+            }
+        }
+
+        if (feedback.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = feedback)
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(onClick = { navController.navigate(Screen.Home.route) }) {
+            Text(text = backText)
         }
     }
 }
+
 
 @Composable
 fun SettingsScreen(navController: NavHostController) {
@@ -362,7 +432,58 @@ fun SettingsScreen(navController: NavHostController) {
 
 @Composable
 fun ProfileScreen(navController: NavHostController) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Profile")
+    val context = LocalContext.current
+    val totalStars = remember { (1..9).sumOf { PreferencesManager.getStarCount(context, it) } }
+    val selectedCharacter = remember { PreferencesManager.getSelectedCharacter(context) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(text = stringResource(id = R.string.profile_title), style = MaterialTheme.typography.headlineLarge)
+
+        Text(text = stringResource(id = R.string.profile_total_stars, totalStars))
+
+        Text(text = stringResource(id = R.string.profile_badges))
+        LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.height(120.dp)) {
+            items((1..9).toList()) { stage ->
+                val completed = PreferencesManager.isStageCompleted(context, stage)
+                val color = if (completed) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+                Box(
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .size(40.dp)
+                        .background(color),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(text = stage.toString())
+                }
+            }
+        }
+
+        val charLabel = when (selectedCharacter) {
+            1 -> stringResource(id = R.string.character_1)
+            2 -> stringResource(id = R.string.character_2)
+            3 -> stringResource(id = R.string.character_3)
+            else -> stringResource(id = R.string.character_1)
+        }
+        Text(text = stringResource(id = R.string.profile_selected_character, charLabel))
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Text(text = stringResource(id = R.string.dressup_placeholder))
     }
+}
+
+private fun generateOptions(left: Int, right: Int, range: IntRange): List<Int> {
+    val correct = left * right
+    val options = mutableSetOf(correct)
+    while (options.size < 4) {
+        val value = range.random() * range.random()
+        options.add(value)
+    }
+    return options.shuffled()
 }

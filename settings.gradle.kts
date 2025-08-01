@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "KukuTrainer"
 include(":app")
+include(":designsystem")
  

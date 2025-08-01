@@ -1,12 +1,27 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Splash Screen" />
+        android:orientation="vertical"
+        android:padding="16dp">
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:layout_width="wrap_content"
+        android:id="@+id/switch_bgm"
+        android:layout_height="wrap_content"
+        android:text="@string/bgm"
+        android:contentDescription="@string/bgm"
+        app:showText="true"
+        android:padding="12dp"
+        android:minHeight="48dp" />
+
+
+    <SeekBar
+        android:id="@+id/seek_speed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="200"
+        android:progress="100" />
+
 </LinearLayout>

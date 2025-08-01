@@ -1,23 +1,23 @@
 package com.example.kukutrainer
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import com.example.kukutrainer.ui.theme.KukuTrainerTheme
-import com.example.kukutrainer.saveSelectedCharacter
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import com.example.kukutrainer.data.PreferencesManager
 
-class CharacterSelectActivity : ComponentActivity() {
+class CharacterSelectActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            KukuTrainerTheme {
-                CharacterSelectScreen { id ->
-                    saveSelectedCharacter(id)
-                    startActivity(Intent(this, MainMenuActivity::class.java))
-                    finish()
-                }
-            }
-        }
+        setContentView(R.layout.activity_character_select)
+
+        findViewById<View>(R.id.character1).setOnClickListener { selectCharacter(1) }
+        findViewById<View>(R.id.character2).setOnClickListener { selectCharacter(2) }
+        findViewById<View>(R.id.character3).setOnClickListener { selectCharacter(3) }
+        findViewById<View>(R.id.character4).setOnClickListener { selectCharacter(4) }
+    }
+
+    private fun selectCharacter(id: Int) {
+        PreferencesManager.setSelectedCharacter(this, id)
+        finish()
     }
 }

@@ -6,4 +6,13 @@
     <string name="character_3">キャラクター３</string>
     <string name="select_character_prompt">キャラクターをえらんでね</string>
     <string name="splash_tagline">未就学児でも学べる九九アプリ</string>
+    <string name="learning_mode">学習モード</string>
+    <string name="quiz_mode">クイズモード</string>
+    <string name="total_stars">合計スター数: %1$d</string>
+    <string name="completed_stages">クリアしたステージ: %1$d</string>
+    <string name="go_to_profile">プロフィール</string>
+    <string name="stage_format">ステージ%1$d</string>
+    <string name="learning_status_not_started">未学習</string>
+    <string name="learning_status_in_progress">学習中</string>
+    <string name="learning_status_completed">完了</string>
 </resources>

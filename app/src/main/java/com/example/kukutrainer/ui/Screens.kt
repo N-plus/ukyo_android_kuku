@@ -19,12 +19,17 @@ import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.ui.unit.dp
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Card
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 
 @Composable
 fun SplashScreen(onFinished: (Boolean) -> Unit) {
@@ -124,22 +129,118 @@ private fun CharacterCard(label: String, selected: Boolean, onClick: () -> Unit)
 }
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Button(onClick = { navController.navigate(Screen.LearningStageSelect.route) }) {
-            Text("Home")
+private fun StageCard(stage: Int, subtitle: String, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = stringResource(id = R.string.stage_format, stage))
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = subtitle)
         }
     }
 }
 
 @Composable
+fun HomeScreen(navController: NavHostController) {
+    val context = LocalContext.current
+    val character = remember { PreferencesManager.getSelectedCharacter(context) }
+
+    var targetScale by remember { mutableStateOf(0.8f) }
+    val scale by animateFloatAsState(targetValue = targetScale, label = "charScale")
+
+    LaunchedEffect(Unit) { targetScale = 1f }
+
+    val totalStars = remember { (1..9).sumOf { PreferencesManager.getStarCount(context, it) } }
+    val completedStages = remember { (1..9).count { PreferencesManager.isStageCompleted(context, it) } }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+            contentDescription = null,
+            modifier = Modifier
+                .size(120.dp)
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                }
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = { navController.navigate(Screen.LearningStageSelect.route) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+        ) {
+            Text(text = stringResource(id = R.string.learning_mode))
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = { navController.navigate(Screen.QuizDifficultySelect.route) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+        ) {
+            Text(text = stringResource(id = R.string.quiz_mode))
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(text = stringResource(id = R.string.total_stars, totalStars))
+        Text(text = stringResource(id = R.string.completed_stages, completedStages))
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = stringResource(id = R.string.go_to_profile),
+            modifier = Modifier.clickable { navController.navigate(Screen.Profile.route) }
+        )
+    }
+}
+
+
+@Composable
 fun LearningStageSelectScreen(navController: NavHostController) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Button(onClick = { navController.navigate(Screen.Learning.createRoute(1)) }) {
-            Text("Stage Select")
+    val context = LocalContext.current
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        items((1..9).toList()) { stage ->
+            val completed = PreferencesManager.isStageCompleted(context, stage)
+            val stars = PreferencesManager.getStarCount(context, stage)
+            val status = when {
+                completed -> stringResource(id = R.string.learning_status_completed)
+                stars > 0 -> stringResource(id = R.string.learning_status_in_progress)
+                else -> stringResource(id = R.string.learning_status_not_started)
+            }
+            val subtitle = if (completed) "${stars}★" else status
+            StageCard(stage, subtitle) {
+                navController.navigate(Screen.Learning.createRoute(stage))
+            }
         }
     }
 }
+
 
 @Composable
 fun LearningScreen(stage: Int, navController: NavHostController) {

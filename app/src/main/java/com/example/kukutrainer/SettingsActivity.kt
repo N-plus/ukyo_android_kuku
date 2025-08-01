@@ -3,7 +3,7 @@ package com.example.kukutrainer
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 
-class SettingsActivity : ComponentActivity() {
+class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)

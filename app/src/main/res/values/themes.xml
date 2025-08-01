@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.KukuTrainer" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.KukuTrainer" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- カスタマイズ例 -->
+        <item name="colorPrimary">@color/card_bg</item>
+        <item name="colorOnPrimary">@color/text_primary</item>
+        <item name="android:statusBarColor">@color/card_bg</item>
+    </style>
 </resources>

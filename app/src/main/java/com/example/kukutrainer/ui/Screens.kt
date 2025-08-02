@@ -16,6 +16,7 @@ import com.example.kukutrainer.navigation.Screen
 import com.example.kukutrainer.R
 import com.example.kukutrainer.data.PreferencesManager
 import android.content.Context
+import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.Image
 import androidx.compose.ui.unit.dp
 import androidx.appcompat.content.res.AppCompatResources
@@ -34,6 +35,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @Composable
 fun SplashScreen(onFinished: (Boolean) -> Unit) {
@@ -250,6 +252,19 @@ fun LearningStageSelectScreen(navController: NavHostController) {
 fun LearningScreen(stage: Int, navController: NavHostController) {
     val context = LocalContext.current
     var index by remember { mutableStateOf(1) }
+    val tts = remember { TextToSpeech(context) { } }
+    DisposableEffect(Unit) { onDispose { tts.shutdown() } }
+    LaunchedEffect(Unit) { tts.language = Locale.JAPANESE }
+    LaunchedEffect(index) {
+        val text = context.getString(
+            R.string.learning_expression_format,
+            stage,
+            index,
+            stage * index
+        )
+        tts.setSpeechRate(PreferencesManager.getSoundSpeed(context))
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+    }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -279,8 +294,10 @@ fun CompletionScreen(stage: Int, navController: NavHostController) {
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = stringResource(id = R.string.congratulations))
+            FeedbackAnimation(state = FeedbackState.Completed)
             Spacer(modifier = Modifier.height(16.dp))
+            Text(text = stringResource(id = R.string.congratulations))
+            Spacer(modifier = Modifier.height(8.dp))
             Text(text = "${stars}★")
             Spacer(modifier = Modifier.height(24.dp))
             Button(onClick = { navController.navigate(Screen.Home.route) }) {
@@ -315,6 +332,7 @@ fun QuizDifficultySelectScreen(navController: NavHostController) {
 
 @Composable
 fun QuizScreen(difficulty: Int, navController: NavHostController) {
+    val context = LocalContext.current
     val range = when (difficulty) {
         1 -> 1..3
         2 -> 1..6
@@ -324,10 +342,24 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
     var left by rememberSaveable { mutableStateOf(range.random()) }
     var right by rememberSaveable { mutableStateOf(range.random()) }
     var options by remember { mutableStateOf(generateOptions(left, right, range)) }
+    var feedbackState by remember { mutableStateOf(FeedbackState.None) }
+    var hint by remember { mutableStateOf("") }
     var feedback by remember { mutableStateOf("") }
     var stars by rememberSaveable { mutableStateOf(0) }
 
     val coroutineScope = rememberCoroutineScope()
+    val tts = remember { TextToSpeech(context) { } }
+    DisposableEffect(Unit) { onDispose { tts.shutdown() } }
+    LaunchedEffect(Unit) { tts.language = Locale.JAPANESE }
+
+    fun speak(text: String) {
+        tts.setSpeechRate(PreferencesManager.getSoundSpeed(context))
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+    }
+
+    LaunchedEffect(left, right) {
+        speak(context.getString(R.string.quiz_question_format, left, right))
+    }
 
     // ここで stringResource を取得（Composable コンテキスト内）
     val correctText = stringResource(id = R.string.quiz_correct)
@@ -359,13 +391,16 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
                 onClick = {
                     if (option == left * right) {
                         stars++
-                        feedback = correctText
+                        feedbackState = FeedbackState.Correct
+                        speak(correctText)
                         coroutineScope.launch {
                             delay(800)
                             nextQuestion()
                         }
                     } else {
-                        feedback = wrongHintText
+                        hint = wrongHintText
+                        feedbackState = FeedbackState.Incorrect
+                        speak(wrongHintText)
                     }
                 },
                 modifier = Modifier
@@ -375,10 +410,9 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
                 Text(text = option.toString())
             }
         }
-
-        if (feedback.isNotEmpty()) {
+        if (feedbackState != FeedbackState.None) {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = feedback)
+            FeedbackAnimation(state = feedbackState, hint = hint)
         }
 
         Spacer(modifier = Modifier.height(24.dp))

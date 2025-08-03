@@ -37,6 +37,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.coroutines.launch
 import java.util.Locale
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun SplashScreen(onFinished: (Boolean) -> Unit) {
@@ -62,7 +63,10 @@ fun SplashScreen(onFinished: (Boolean) -> Unit) {
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = stringResource(id = R.string.splash_tagline))
+            Text(
+                text = stringResource(id = R.string.splash_tagline),
+                fontSize = 24.sp
+            )
         }
     }
 }

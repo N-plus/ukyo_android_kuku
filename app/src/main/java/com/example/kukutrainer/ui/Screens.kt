@@ -36,6 +36,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.coroutines.launch
 import java.util.Locale
+import androidx.compose.ui.res.colorResource
 
 @Composable
 fun SplashScreen(onFinished: (Boolean) -> Unit) {
@@ -45,7 +46,12 @@ fun SplashScreen(onFinished: (Boolean) -> Unit) {
         val selected = isCharacterSelected(context)
         onFinished(selected)
     }
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.splash_bg)),
+        contentAlignment = Alignment.Center
+    ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             val context = LocalContext.current
             val drawable = AppCompatResources.getDrawable(context, R.mipmap.ic_launcher)
@@ -118,14 +124,25 @@ fun CharacterSelectionScreen(navController: NavHostController) {
 
 @Composable
 private fun CharacterCard(label: String, selected: Boolean, onClick: () -> Unit) {
-    val border = if (selected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null
+    val cardColors = if (selected) {
+        CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        )
+    } else {
+        CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary
+        )
+    }
+    val border = if (selected) BorderStroke(2.dp, MaterialTheme.colorScheme.onPrimary) else null
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clickable { onClick() },
         border = border,
-        colors = CardDefaults.cardColors()
+        colors = cardColors
     ) {
         Text(
             text = label,
@@ -141,7 +158,10 @@ private fun StageCard(stage: Int, subtitle: String, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(8.dp)
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.tertiary,
+            contentColor = MaterialTheme.colorScheme.onTertiary
+        )
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -254,14 +274,14 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
     var index by remember { mutableStateOf(1) }
     val tts = remember { TextToSpeech(context) { } }
     DisposableEffect(Unit) { onDispose { tts.shutdown() } }
-    LaunchedEffect(Unit) { tts.language = Locale.JAPANESE }
-    LaunchedEffect(index) {
+    fun speakCurrent() {
         val text = context.getString(
             R.string.learning_expression_format,
             stage,
             index,
             stage * index
         )
+        tts.language = Locale.JAPANESE
         tts.setSpeechRate(PreferencesManager.getSoundSpeed(context))
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
     }
@@ -270,6 +290,10 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             val result = stage * index
             Text(text = stringResource(id = R.string.learning_expression_format, stage, index, result))
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { speakCurrent() }) {
+                Text(text = stringResource(id = R.string.play_sound))
+            }
             Spacer(modifier = Modifier.height(24.dp))
             Button(onClick = {
                 if (index < 9) {
@@ -353,11 +377,12 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
     LaunchedEffect(Unit) { tts.language = Locale.JAPANESE }
 
     fun speak(text: String) {
+        tts.language = Locale.JAPANESE
         tts.setSpeechRate(PreferencesManager.getSoundSpeed(context))
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
     }
 
-    LaunchedEffect(left, right) {
+    fun speakQuestion() {
         speak(context.getString(R.string.quiz_question_format, left, right))
     }
 
@@ -384,6 +409,10 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
         Text(text = stringResource(id = R.string.quiz_stars, stars))
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = stringResource(id = R.string.quiz_question_format, left, right))
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = { speakQuestion() }) {
+            Text(text = stringResource(id = R.string.play_sound))
+        }
         Spacer(modifier = Modifier.height(16.dp))
 
         options.forEach { option ->

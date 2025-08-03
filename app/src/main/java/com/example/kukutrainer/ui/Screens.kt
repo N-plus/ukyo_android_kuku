@@ -343,10 +343,6 @@ fun QuizDifficultySelectScreen(navController: NavHostController) {
                 Text(text = stringResource(id = R.string.easy))
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { navController.navigate(Screen.Quiz.createRoute(2)) }) {
-                Text(text = stringResource(id = R.string.normal))
-            }
-            Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = { navController.navigate(Screen.Quiz.createRoute(3)) }) {
                 Text(text = stringResource(id = R.string.hard))
             }
@@ -409,10 +405,6 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
         Text(text = stringResource(id = R.string.quiz_stars, stars))
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = stringResource(id = R.string.quiz_question_format, left, right))
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { speakQuestion() }) {
-            Text(text = stringResource(id = R.string.play_sound))
-        }
         Spacer(modifier = Modifier.height(16.dp))
 
         options.forEach { option ->

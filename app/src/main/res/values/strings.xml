@@ -36,4 +36,5 @@
     <string name="profile_badges">獲得バッジ</string>
     <string name="profile_selected_character">選択中キャラクター: %1$s</string>
     <string name="dressup_placeholder">着せ替え機能は準備中です</string>
+    <string name="play_sound">音声</string>
 </resources>

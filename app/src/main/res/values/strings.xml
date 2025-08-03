@@ -11,6 +11,7 @@
     <string name="total_stars">合計スター数: %1$d</string>
     <string name="completed_stages">クリアしたステージ: %1$d</string>
     <string name="go_to_profile">プロフィール</string>
+    <string name="settings">設定</string>
     <string name="stage_format">ステージ%1$d</string>
     <string name="learning_status_not_started">未学習</string>
     <string name="learning_status_in_progress">学習中</string>

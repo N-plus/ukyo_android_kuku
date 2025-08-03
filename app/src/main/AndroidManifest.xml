@@ -23,14 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainMenuActivity" />
-        <activity android:name=".CharacterSelectActivity" />
-        <activity android:name=".LearningStageSelectActivity" />
-        <activity android:name=".LearningActivity" />
-        <activity android:name=".QuizDifficultySelectActivity" />
-        <activity android:name=".QuizActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".ProfileActivity" />
     </application>
 
 </manifest>

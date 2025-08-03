@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.sp
+import com.example.kukutrainer.audio.playRecordedKuku
 
 @Composable
 fun SplashScreen(onFinished: (Boolean) -> Unit) {
@@ -232,16 +233,25 @@ fun HomeScreen(navController: NavHostController) {
         }
 
         Spacer(modifier = Modifier.height(24.dp))
-
-        Text(text = stringResource(id = R.string.total_stars, totalStars))
-        Text(text = stringResource(id = R.string.completed_stages, completedStages))
+        Button(
+            onClick = { navController.navigate(Screen.Settings.route) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+        ) {
+            Text(text = stringResource(id = R.string.settings))
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text(
-            text = stringResource(id = R.string.go_to_profile),
-            modifier = Modifier.clickable { navController.navigate(Screen.Profile.route) }
-        )
+        Button(
+            onClick = { navController.navigate(Screen.Profile.route) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+        ) {
+            Text(text = stringResource(id = R.string.go_to_profile))
+        }
     }
 }
 
@@ -279,15 +289,17 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
     val tts = remember { TextToSpeech(context) { } }
     DisposableEffect(Unit) { onDispose { tts.shutdown() } }
     fun speakCurrent() {
-        val text = context.getString(
-            R.string.learning_expression_format,
-            stage,
-            index,
-            stage * index
-        )
-        tts.language = Locale.JAPANESE
-        tts.setSpeechRate(PreferencesManager.getSoundSpeed(context))
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+        if (!playRecordedKuku(context, stage, index)) {
+            val text = context.getString(
+                R.string.learning_expression_format,
+                stage,
+                index,
+                stage * index
+            )
+            tts.language = Locale.JAPANESE
+            tts.setSpeechRate(PreferencesManager.getSoundSpeed(context))
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -310,6 +322,10 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
                 }
             }) {
                 Text(text = stringResource(id = R.string.next))
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(onClick = { navController.navigate(Screen.Home.route) }) {
+                Text(text = stringResource(id = R.string.back_to_home))
             }
         }
     }

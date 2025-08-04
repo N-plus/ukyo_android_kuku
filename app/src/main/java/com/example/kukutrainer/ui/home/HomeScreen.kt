@@ -147,21 +147,21 @@ fun KidsHomeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     KidsMenuButton(
-                        text = "学習モード",
+                        text = "くくをまなぶ",
                         emoji = "📚",
                         colors = listOf(Color(0xFFFF6B9D), Color(0xFFFF8E9B)),
                         onClick = onStudyModeClick
                     )
 
                     KidsMenuButton(
-                        text = "クイズモード",
+                        text = "クイズ",
                         emoji = "🎯",
                         colors = listOf(Color(0xFF4ECDC4), Color(0xFF44A08D)),
                         onClick = onQuizModeClick
                     )
 
                     KidsMenuButton(
-                        text = "設定",
+                        text = "せってい",
                         emoji = "⚙️",
                         colors = listOf(Color(0xFFFFBE0B), Color(0xFFF39F17)),
                         onClick = onSettingsClick
@@ -170,7 +170,7 @@ fun KidsHomeScreen(
                     KidsMenuButton(
                         text = "プロフィール",
                         emoji = "👤",
-                        colors = listOf(Color(0xFF9B59B6), Color(0xFF8E44AD)),
+                        colors = listOf(Color(0xFFD4EF5E), Color(0xFFEFB747)),
                         onClick = onProfileClick
                     )
                 }

@@ -113,46 +113,54 @@ fun LearningStageSelectScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            AnimatedVisibility(
-                visible = showContent,
-                enter = slideInVertically(
-                    initialOffsetY = { it },
-                    animationSpec = tween(1000, easing = FastOutSlowInEasing)
-                ) + fadeIn()
-            ) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.weight(1f)
+            Box(modifier = Modifier.weight(1f)) {
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = showContent,
+                    enter = slideInVertically(
+                        initialOffsetY = { it },
+                        animationSpec = tween(1000, easing = FastOutSlowInEasing)
+                    ) + fadeIn(),
                 ) {
-                    itemsIndexed(stages) { index, stage ->
-                        StageCard(
-                            stage = stage,
-                            isSelected = selectedStage == stage.id,
-                            animationDelay = index * 100L,
-                            onClick = { selectedStage = stage.id }
-                        )
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(
+                            start = 8.dp,
+                            top = 8.dp,
+                            end = 8.dp,
+                            bottom = if (selectedStage != null) 96.dp else 8.dp
+                        ),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        itemsIndexed(stages) { index, stage ->
+                            StageCard(
+                                stage = stage,
+                                isSelected = selectedStage == stage.id,
+                                animationDelay = index * 100L,
+                                onClick = { selectedStage = stage.id }
+                            )
+                        }
                     }
                 }
-            }
 
-            AnimatedVisibility(
-                visible = selectedStage != null,
-                enter = slideInVertically(
-                    initialOffsetY = { it },
-                    animationSpec = tween(600, easing = FastOutSlowInEasing)
-                ) + fadeIn(),
-                exit = slideOutVertically(
-                    targetOffsetY = { it },
-                    animationSpec = tween(400)
-                ) + fadeOut()
-            ) {
-                val stage = selectedStage
-                if (stage != null) {
-                    StageSelectionButton(stage = stage) {
-                        navController.navigate(Screen.Learning.createRoute(stage))
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = selectedStage != null,
+                    enter = slideInVertically(
+                        initialOffsetY = { it },
+                        animationSpec = tween(600, easing = FastOutSlowInEasing)
+                    ) + fadeIn(),
+                    exit = slideOutVertically(
+                        targetOffsetY = { it },
+                        animationSpec = tween(400)
+                    ) + fadeOut(),
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                ) {
+                    val stage = selectedStage
+                    if (stage != null) {
+                        StageSelectionButton(stage = stage) {
+                            navController.navigate(Screen.Learning.createRoute(stage))
+                        }
                     }
                 }
             }

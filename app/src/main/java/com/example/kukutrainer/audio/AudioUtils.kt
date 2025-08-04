@@ -9,16 +9,20 @@ import android.media.MediaPlayer
  * Returns true if the audio was played, or false if the resource doesn't exist.
  */
 fun playRecordedKuku(context: Context, left: Int, right: Int): Boolean {
-    val resName = "kuku_${'$'}left_${'$'}right"
+    val resName = "kuku_${left}_${right}"
     val resId = context.resources.getIdentifier(resName, "raw", context.packageName)
     if (resId == 0) {
         return false
     }
-    val player = MediaPlayer.create(context, resId)
+    val player = MediaPlayer.create(context, resId) ?: return false
     player.setOnCompletionListener { mp ->
-        mp.reset()
         mp.release()
     }
-    player.start()
-    return true
+    return try {
+        player.start()
+        true
+    } catch (e: Exception) {
+        player.release()
+        false
+    }
 }

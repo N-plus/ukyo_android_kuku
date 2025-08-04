@@ -5,7 +5,16 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.kukutrainer.ui.*
+import com.example.kukutrainer.ui.home.HomeScreen
+import com.example.kukutrainer.ui.splash.SplashScreen
+import com.example.kukutrainer.ui.character.CharacterSelectionScreen
+import com.example.kukutrainer.ui.learning.LearningStageSelectScreen
+import com.example.kukutrainer.ui.learning.LearningScreen
+import com.example.kukutrainer.ui.learning.CompletionScreen
+import com.example.kukutrainer.ui.quiz.QuizDifficultySelectScreen
+import com.example.kukutrainer.ui.quiz.QuizScreen
+import com.example.kukutrainer.ui.settings.SettingsScreen
+import com.example.kukutrainer.ui.profile.ProfileScreen
 
 @Composable
 fun KukuNavGraph(navController: NavHostController, startDestination: String = Screen.Splash.route) {

@@ -33,8 +33,11 @@
     <string name="quiz_stars">スター: %1$d</string>
     <string name="profile_title">プロフィール</string>
     <string name="profile_total_stars">これまで獲得した星: %1$d</string>
+    <string name="quiz_progress">全%2$d問中%1$d問目</string>
     <string name="profile_badges">獲得バッジ</string>
     <string name="profile_selected_character">選択中キャラクター: %1$s</string>
     <string name="dressup_placeholder">着せ替え機能は準備中です</string>
     <string name="play_sound">音声</string>
+    <string name="quiz_answer_hint">こたえ</string>
+    <string name="quiz_submit">こたえあわせ</string>
 </resources>

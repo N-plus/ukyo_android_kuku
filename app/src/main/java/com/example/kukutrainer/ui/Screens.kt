@@ -33,6 +33,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Switch
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.runtime.saveable.rememberSaveable
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -211,7 +214,6 @@ fun HomeScreen(navController: NavHostController) {
         )
 
         Spacer(modifier = Modifier.height(24.dp))
-
         Button(
             onClick = { navController.navigate(Screen.LearningStageSelect.route) },
             modifier = Modifier
@@ -386,6 +388,9 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
     var hint by remember { mutableStateOf("") }
     var feedback by remember { mutableStateOf("") }
     var stars by rememberSaveable { mutableStateOf(0) }
+    var currentQuestion by rememberSaveable { mutableStateOf(1) }
+    val totalQuestions = 10
+    var userAnswer by remember { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
     val tts = remember { TextToSpeech(context) { } }
@@ -408,10 +413,12 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
     val backText = stringResource(id = R.string.back_to_home)
 
     fun nextQuestion() {
+        currentQuestion++
         left = range.random()
         right = range.random()
         options = generateOptions(left, right, range)
         feedback = ""
+        userAnswer = ""
     }
 
     Column(
@@ -421,16 +428,24 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // フォーマット付きの stringResource はその都度呼び出して構わない（stars / left / right は状態）
-        Text(text = stringResource(id = R.string.quiz_stars, stars))
+        Text(text = stringResource(id = R.string.quiz_progress, currentQuestion, totalQuestions))
         Spacer(modifier = Modifier.height(16.dp))
+        // フォーマット付きの stringResource はその都度呼び出して構わない（stars / left / right は状態）
         Text(text = stringResource(id = R.string.quiz_question_format, left, right))
         Spacer(modifier = Modifier.height(16.dp))
 
-        options.forEach { option ->
+        if (difficulty >= 3) {
+            OutlinedTextField(
+                value = userAnswer,
+                onValueChange = { userAnswer = it.filter { ch -> ch.isDigit() } },
+                label = { Text(stringResource(id = R.string.quiz_answer_hint)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    if (option == left * right) {
+                    if (userAnswer.toIntOrNull() == left * right) {
                         stars++
                         feedbackState = FeedbackState.Correct
                         speak(correctText)
@@ -448,7 +463,32 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
             ) {
-                Text(text = option.toString())
+                Text(text = stringResource(id = R.string.quiz_submit))
+            }
+        } else {
+            options.forEach { option ->
+                Button(
+                    onClick = {
+                        if (option == left * right) {
+                            stars++
+                            feedbackState = FeedbackState.Correct
+                            speak(correctText)
+                            coroutineScope.launch {
+                                delay(800)
+                                nextQuestion()
+                            }
+                        } else {
+                            hint = wrongHintText
+                            feedbackState = FeedbackState.Incorrect
+                            speak(wrongHintText)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                ) {
+                    Text(text = option.toString())
+                }
             }
         }
         if (feedbackState != FeedbackState.None) {

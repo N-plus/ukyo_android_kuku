@@ -148,7 +148,7 @@ fun SplashScreen(onFinished: (Boolean) -> Unit) {
                     contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.splash),
+                        painter = painterResource(id = R.drawable.chara1),
                         contentDescription = null,
                     )
                 }

@@ -5,6 +5,10 @@ import android.speech.tts.TextToSpeech
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
@@ -21,6 +25,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -63,6 +68,15 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
             Color(0xFFFFE5B4)
         )
     )
+    val infiniteTransition = rememberInfiniteTransition()
+    val audioButtonScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 1.1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1000),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
 
     fun playAudio() {
         mediaPlayer?.release()
@@ -96,6 +110,9 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
             mediaPlayer?.release()
         }
     }
+    LaunchedEffect(Unit) {
+        playAudio()
+    }
 
     Box(
         modifier = Modifier
@@ -111,21 +128,29 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                }
-                FloatingActionButton(
-                    onClick = { navController.navigate(Screen.Home.route) },
-                    modifier = Modifier.size(48.dp),
-                    containerColor = Color(0xFFFF6B9D),
-                    contentColor = Color.White
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Home,
-                        contentDescription = stringResource(id = R.string.back_to_home),
-                        modifier = Modifier.size(24.dp)
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    FloatingActionButton(
+                        onClick = { playAudio() },
+                        modifier = Modifier
+                            .size(64.dp)
+                            .scale(audioButtonScale),
+                        containerColor = Color(0xFF4ECDC4),
+                        contentColor = Color.White
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.VolumeUp,
+                            contentDescription = stringResource(id = R.string.play_sound),
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
+                    Text(
+                        text = stringResource(id = R.string.listen_hint),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 8.dp)
                     )
                 }
             }

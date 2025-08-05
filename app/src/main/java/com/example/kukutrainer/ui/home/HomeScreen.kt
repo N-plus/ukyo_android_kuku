@@ -18,6 +18,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,15 +50,18 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.kukutrainer.R
 import com.example.kukutrainer.navigation.Screen
 import kotlinx.coroutines.delay
 import kotlin.math.sin
 import kotlin.random.Random
+import androidx.compose.foundation.Image
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
@@ -147,21 +151,21 @@ fun KidsHomeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     KidsMenuButton(
-                        text = "学習モード",
+                        text = "くくをまなぶ",
                         emoji = "📚",
                         colors = listOf(Color(0xFFFF6B9D), Color(0xFFFF8E9B)),
                         onClick = onStudyModeClick
                     )
 
                     KidsMenuButton(
-                        text = "クイズモード",
+                        text = "クイズ",
                         emoji = "🎯",
                         colors = listOf(Color(0xFF4ECDC4), Color(0xFF44A08D)),
                         onClick = onQuizModeClick
                     )
 
                     KidsMenuButton(
-                        text = "設定",
+                        text = "せってい",
                         emoji = "⚙️",
                         colors = listOf(Color(0xFFFFBE0B), Color(0xFFF39F17)),
                         onClick = onSettingsClick
@@ -170,7 +174,7 @@ fun KidsHomeScreen(
                     KidsMenuButton(
                         text = "プロフィール",
                         emoji = "👤",
-                        colors = listOf(Color(0xFF9B59B6), Color(0xFF8E44AD)),
+                        colors = listOf(Color(0xFFD4EF5E), Color(0xFFEFB747)),
                         onClick = onProfileClick
                     )
                 }
@@ -223,7 +227,10 @@ fun KidsHeader() {
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "🦄", fontSize = 48.sp)
+            Image(
+                painter = painterResource(id = R.drawable.splash),
+                contentDescription = null,
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))

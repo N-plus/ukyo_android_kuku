@@ -69,4 +69,5 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.8.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3") // delay / coroutine 用
     debugImplementation("androidx.compose.ui:ui-tooling")
+    implementation("androidx.compose.material:material-icons-extended")
 }

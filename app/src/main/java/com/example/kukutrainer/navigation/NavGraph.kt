@@ -1,10 +1,11 @@
-package com.example.kukutrainer.navigation
-
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import androidx.navigation.NavType
+import com.example.kukutrainer.navigation.Screen
 import com.example.kukutrainer.ui.home.HomeScreen
 import com.example.kukutrainer.ui.splash.SplashScreen
 import com.example.kukutrainer.ui.character.CharacterSelectionScreen
@@ -17,27 +18,74 @@ import com.example.kukutrainer.ui.settings.SettingsScreen
 import com.example.kukutrainer.ui.profile.ProfileScreen
 
 @Composable
-fun KukuNavGraph(navController: NavHostController, startDestination: String = Screen.Splash.route) {
+fun KukuNavGraph(
+    navController: NavHostController,
+    startDestination: String = Screen.Splash.route
+) {
     NavHost(navController = navController, startDestination = startDestination) {
         addSplash(navController)
-        composable(Screen.CharacterSelection.route) { CharacterSelectionScreen(navController) }
-        composable(Screen.Home.route) { HomeScreen(navController) }
-        composable(Screen.LearningStageSelect.route) { LearningStageSelectScreen(navController) }
-        composable(Screen.Learning.route) { backStackEntry ->
-            val stage = backStackEntry.arguments?.getString(Screen.Learning.KEY_STAGE)?.toIntOrNull() ?: 0
+
+        composable(Screen.CharacterSelection.route) {
+            CharacterSelectionScreen(navController)
+        }
+        composable(Screen.Home.route) {
+            HomeScreen(navController)
+        }
+        composable(Screen.LearningStageSelect.route) {
+            LearningStageSelectScreen(navController)
+        }
+
+        composable(
+            route = Screen.Learning.route,
+            arguments = listOf(
+                navArgument(Screen.Learning.KEY_STAGE) {
+                    type = NavType.IntType
+                    defaultValue = 1
+                }
+            )
+        ) { backStackEntry ->
+            val stage = backStackEntry.arguments
+                ?.getInt(Screen.Learning.KEY_STAGE) ?: 0
             LearningScreen(stage, navController)
         }
-        composable(Screen.Completion.route) { backStackEntry ->
-            val stage = backStackEntry.arguments?.getString(Screen.Completion.KEY_STAGE)?.toIntOrNull() ?: 0
+
+        composable(
+            route = Screen.Completion.route,
+            arguments = listOf(
+                navArgument(Screen.Completion.KEY_STAGE) {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            val stage = backStackEntry.arguments
+                ?.getInt(Screen.Completion.KEY_STAGE) ?: 0
             CompletionScreen(stage, navController)
         }
-        composable(Screen.QuizDifficultySelect.route) { QuizDifficultySelectScreen(navController) }
-        composable(Screen.Quiz.route) { backStackEntry ->
-            val diff = backStackEntry.arguments?.getString(Screen.Quiz.KEY_DIFFICULTY)?.toIntOrNull() ?: 0
+
+        composable(Screen.QuizDifficultySelect.route) {
+            QuizDifficultySelectScreen(navController)
+        }
+
+        composable(
+            route = Screen.Quiz.route,
+            arguments = listOf(
+                navArgument(Screen.Quiz.KEY_DIFFICULTY) {
+                    type = NavType.IntType
+                    defaultValue = 0
+                }
+            )
+        ) { backStackEntry ->
+            val diff = backStackEntry.arguments
+                ?.getInt(Screen.Quiz.KEY_DIFFICULTY) ?: 0
             QuizScreen(diff, navController)
         }
-        composable(Screen.Settings.route) { SettingsScreen(navController) }
-        composable(Screen.Profile.route) { ProfileScreen(navController) }
+
+        composable(Screen.Settings.route) {
+            SettingsScreen(navController)
+        }
+        composable(Screen.Profile.route) {
+            ProfileScreen(navController)
+        }
     }
 }
 

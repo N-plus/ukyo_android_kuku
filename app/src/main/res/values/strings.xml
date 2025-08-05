@@ -40,4 +40,5 @@
     <string name="play_sound">音声</string>
     <string name="quiz_answer_hint">こたえ</string>
     <string name="quiz_submit">こたえあわせ</string>
+    <string name="listen_hint">きいてみよう</string>
 </resources>

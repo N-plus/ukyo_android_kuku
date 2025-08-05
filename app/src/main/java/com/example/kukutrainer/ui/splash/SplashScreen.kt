@@ -15,6 +15,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,13 +44,15 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+
 import androidx.compose.ui.unit.sp
 import com.example.kukutrainer.data.PreferencesManager
+import com.example.kukutrainer.R
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
@@ -128,13 +131,7 @@ fun SplashScreen(onFinished: (Boolean) -> Unit) {
                     .scale(bounce),
                 contentAlignment = Alignment.Center
             ) {
-                Canvas(
-                    modifier = Modifier
-                        .size(180.dp)
-                        .rotate(rotation)
-                ) {
-                    drawRainbowCircle(this, rainbow)
-                }
+
 
                 Box(
                     modifier = Modifier
@@ -150,7 +147,10 @@ fun SplashScreen(onFinished: (Boolean) -> Unit) {
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "🌈", fontSize = 48.sp)
+                    Image(
+                        painter = painterResource(id = R.drawable.splash),
+                        contentDescription = null,
+                    )
                 }
             }
 
@@ -241,38 +241,6 @@ fun FloatingStars(offset: Float) {
                 )
             )
         }
-    }
-}
-
-fun drawRainbowCircle(drawScope: DrawScope, offset: Float) {
-    val colors = listOf(
-        Color(0xFFFF0000),
-        Color(0xFFFF7F00),
-        Color(0xFFFFFF00),
-        Color(0xFF00FF00),
-        Color(0xFF0000FF),
-        Color(0xFF4B0082),
-        Color(0xFF9400D3)
-    )
-
-    val strokeWidth = with(drawScope) { 16.dp.toPx() }
-    val radius = (drawScope.size.minDimension - strokeWidth) / 2
-    val center = Offset(drawScope.size.width / 2, drawScope.size.height / 2)
-
-    colors.forEachIndexed { index, color ->
-        val startAngle = (offset + index * 51.43f) % 360f
-        drawScope.drawArc(
-            color = color,
-            startAngle = startAngle,
-            sweepAngle = 51.43f,
-            useCenter = false,
-            topLeft = Offset(
-                center.x - radius,
-                center.y - radius
-            ),
-            size = androidx.compose.ui.geometry.Size(radius * 2, radius * 2),
-            style = androidx.compose.ui.graphics.drawscope.Stroke(width = strokeWidth)
-        )
     }
 }
 

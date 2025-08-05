@@ -42,7 +42,6 @@ enum class QuizDifficulty(
     val emoji: String
 ) {
     EASY("かんたん", "3-4さい", Color(0xFF4CAF50), Color(0xFF81C784), "🐣"),
-    MEDIUM("ふつう", "4-5さい", Color(0xFF2196F3), Color(0xFF64B5F6), "🐰"),
     HARD("むずかしい", "5-6さい", Color(0xFFFF9800), Color(0xFFFFB74D), "🦁")
 }
 
@@ -52,8 +51,7 @@ fun QuizDifficultySelectScreen(navController: NavHostController) {
         onDifficultySelected = { difficulty ->
             val diff = when (difficulty) {
                 QuizDifficulty.EASY -> 1
-                QuizDifficulty.MEDIUM -> 2
-                QuizDifficulty.HARD -> 3
+                QuizDifficulty.HARD -> 2
             }
             navController.navigate(Screen.Quiz.createRoute(diff))
         },

@@ -115,18 +115,6 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "${stage}の段",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2D3436)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "${currentIndex}/9",
-                        fontSize = 16.sp,
-                        color = Color(0xFF636E72)
-                    )
                 }
                 FloatingActionButton(
                     onClick = { navController.navigate(Screen.Home.route) },
@@ -143,12 +131,20 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
             }
 
             Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "${stage}の段",
+                fontSize = 48.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF008EB9)
+            )
+            Spacer(modifier = Modifier.height(24.dp))
 
             AnimatedVisibility(
                 visible = true,
                 enter = scaleIn(animationSpec = tween(500)) + fadeIn(),
                 exit = scaleOut(animationSpec = tween(500)) + fadeOut()
             ) {
+                Spacer(modifier = Modifier.width(16.dp))
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -223,20 +219,20 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
                         Spacer(modifier = Modifier.height(32.dp))
 
                         Text(
-                            text = "${stage} × ${currentIndex} = ${result}",
+                            text = "おんせいをきいて",
                             fontSize = 24.sp,
-                            fontWeight = FontWeight.Medium,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                        Text(
+                            text = "こえにだしてよんでみよう",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
                             color = Color(0xFF2D3436),
                             textAlign = TextAlign.Center
                         )
 
-                        Text(
-                            text = "${stage}かける${currentIndex}は${result}",
-                            fontSize = 18.sp,
-                            color = Color(0xFF636E72),
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(top = 8.dp)
-                        )
                     }
                 }
             }

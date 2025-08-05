@@ -18,6 +18,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,15 +50,18 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.kukutrainer.R
 import com.example.kukutrainer.navigation.Screen
 import kotlinx.coroutines.delay
 import kotlin.math.sin
 import kotlin.random.Random
+import androidx.compose.foundation.Image
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
@@ -223,7 +227,10 @@ fun KidsHeader() {
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "🦄", fontSize = 48.sp)
+            Image(
+                painter = painterResource(id = R.drawable.splash),
+                contentDescription = null,
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))

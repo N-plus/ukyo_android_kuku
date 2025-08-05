@@ -219,7 +219,7 @@ fun AnimatedTitle() {
                     .background(
                         Brush.horizontalGradient(
                             colors = listOf(
-                                Color(0xFFFF6B9D),
+                                Color(0xFF6B95FF),
                                 Color(0xFF4ECDC4),
                                 Color(0xFFFFE66D)
                             )

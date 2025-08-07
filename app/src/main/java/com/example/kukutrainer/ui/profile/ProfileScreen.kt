@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalAnimationApi::class)
+@file:OptIn(ExperimentalAnimationApi::class, ExperimentalLayoutApi::class)
 
 package com.example.kukutrainer.ui.profile
 
@@ -20,9 +20,12 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -47,11 +50,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -59,6 +64,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.kukutrainer.ui.character.Character
+import com.example.kukutrainer.R
 import com.example.kukutrainer.data.PreferencesManager
 import kotlinx.coroutines.delay
 
@@ -334,24 +341,43 @@ fun BadgesSection(context: Context) {
             Color(0xFFFF9800),
             Color(0xFF9C27B0),
             Color(0xFFE91E63),
-            Color(0xFF00BCD4)
+            Color(0xFF00BCD4),
+            Color(0xFFFFC107),
+            Color(0xFF8BC34A),
+            Color(0xFF3F51B5),
+            Color(0xFF795548),
+            Color(0xFF607D8B)
         )
         val icons = listOf(
-            Icons.Default.CheckCircle,
             Icons.Default.Star,
-            Icons.Default.Favorite,
-            Icons.Default.EmojiEvents,
-            Icons.Default.Diamond,
-            Icons.Default.MilitaryTech
+            Icons.Default.Star,
+            Icons.Default.Star,
+            Icons.Default.Star,
+            Icons.Default.Star,
+            Icons.Default.Star,
+            Icons.Default.Star,
+            Icons.Default.Star,
+            Icons.Default.Star,
+            Icons.Default.Quiz,
+            Icons.Default.School
         )
-        (1..6).map { index ->
+        val stageBadges = (1..9).map { index ->
             BadgeInfo(
-                number = index,
+                label = index.toString(),
                 color = colors[index - 1],
                 icon = icons[index - 1],
                 isUnlocked = PreferencesManager.isStageCompleted(context, index)
             )
         }
+        val quizBadges = (1..2).map { quiz ->
+            BadgeInfo(
+                label = "Q$quiz",
+                color = colors[9 + quiz - 1],
+                icon = icons[9 + quiz - 1],
+                isUnlocked = PreferencesManager.isQuizCompleted(context, quiz)
+            )
+        }
+        stageBadges + quizBadges
     }
 
     Card(
@@ -387,39 +413,23 @@ fun BadgesSection(context: Context) {
 
 @Composable
 fun BadgeGrid(showBadges: Boolean, badges: List<BadgeInfo>) {
-    Column {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            badges.take(3).forEachIndexed { index, badge ->
-                AnimatedBadge(
-                    badge = badge,
-                    delay = if (showBadges) index * 150L else 0L,
-                    animate = showBadges
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            badges.drop(3).forEachIndexed { index, badge ->
-                AnimatedBadge(
-                    badge = badge,
-                    delay = if (showBadges) (index + 3) * 150L else 0L,
-                    animate = showBadges
-                )
-            }
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        maxItemsInEachRow = 4,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        badges.forEachIndexed { index, badge ->
+            AnimatedBadge(
+                badge = badge,
+                delay = if (showBadges) index * 150L else 0L,
+                animate = showBadges
+            )
         }
     }
 }
 
 data class BadgeInfo(
-    val number: Int,
+    val label: String,
     val color: Color,
     val icon: ImageVector,
     val isUnlocked: Boolean
@@ -469,7 +479,7 @@ fun AnimatedBadge(
                 ) {
                     androidx.compose.material3.Icon(
                         imageVector = badge.icon,
-                        contentDescription = "バッジ ${badge.number}",
+                        contentDescription = "バッジ ${badge.label}",
                         tint = Color.White,
                         modifier = Modifier.size(40.dp)
                     )
@@ -489,7 +499,7 @@ fun AnimatedBadge(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = badge.number.toString(),
+                        text = badge.label,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Gray
@@ -508,6 +518,13 @@ fun SelectedCharacterSection(selectedCharacter: Int) {
         delay(1500)
         showCharacter = true
     }
+
+    val characters = listOf(
+        Character(1, "ピカちゃん", R.drawable.chara1, Color(0xFFFFE66D), "", ""),
+        Character(2, "ミントくん", R.drawable.chara2, Color(0xFF4ECDC4), "", ""),
+        Character(3, "サクラちゃん", R.drawable.chara3, Color(0xFFFF6B9D), "", "")
+    )
+    val character = characters.firstOrNull { it.id == selectedCharacter }
 
     AnimatedVisibility(
         visible = showCharacter,
@@ -532,7 +549,7 @@ fun SelectedCharacterSection(selectedCharacter: Int) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "選出中キャラクター: キャラクター$selectedCharacter",
+                    text = character?.let { "選択中キャラクター: ${it.name}" } ?: "キャラクター未選択",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFF7B1FA2),
@@ -541,14 +558,16 @@ fun SelectedCharacterSection(selectedCharacter: Int) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                CharacterAvatar()
+                character?.let {
+                    CharacterAvatar(imageRes = it.imageRes)
+                }
             }
         }
     }
 }
 
 @Composable
-fun CharacterAvatar() {
+fun CharacterAvatar(imageRes: Int) {
     val infiniteTransition = rememberInfiniteTransition(label = "character")
     val bounce by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -566,24 +585,13 @@ fun CharacterAvatar() {
             .offset(y = bounce.dp),
         contentAlignment = Alignment.Center
     ) {
-        Card(
-            modifier = Modifier.fillMaxSize(),
-            shape = CircleShape,
-            colors = CardDefaults.cardColors(
-                containerColor = Color(0xFFFFB74D)
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "😊",
-                    fontSize = 60.sp
-                )
-            }
-        }
+        Image(
+            painter = painterResource(id = imageRes),
+            contentDescription = null,
+            modifier = Modifier
+                .size(120.dp)
+                .clip(CircleShape)
+        )
     }
 }
 

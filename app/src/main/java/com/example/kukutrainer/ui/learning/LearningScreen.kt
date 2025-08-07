@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.kukutrainer.R
+import com.example.kukutrainer.audio.BgmPlayer
 import com.example.kukutrainer.audio.playRecordedKuku
 import com.example.kukutrainer.data.PreferencesManager
 import com.example.kukutrainer.navigation.Screen
@@ -69,7 +70,8 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
         )
     )
     val infiniteTransition = rememberInfiniteTransition()
-    val audioButtonScale by infiniteTransition.animateFloat(
+    val homeButtonScale by infiniteTransition.animateFloat(
+
         initialValue = 1f,
         targetValue = 1.1f,
         animationSpec = infiniteRepeatable(
@@ -77,6 +79,10 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
             repeatMode = RepeatMode.Reverse
         )
     )
+
+    if (!PreferencesManager.isVoiceOn(context)) {
+        return
+    }
 
     fun playAudio() {
         mediaPlayer?.release()
@@ -105,9 +111,11 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
     }
 
     DisposableEffect(Unit) {
+        BgmPlayer.stop()
         onDispose {
             tts.shutdown()
             mediaPlayer?.release()
+            BgmPlayer.start(context)
         }
     }
     LaunchedEffect(Unit) {
@@ -133,21 +141,21 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     FloatingActionButton(
-                        onClick = { playAudio() },
+                        onClick = { navController.navigate(Screen.Home.route) },
                         modifier = Modifier
                             .size(64.dp)
-                            .scale(audioButtonScale),
+                            .scale(homeButtonScale),
                         containerColor = Color(0xFF4ECDC4),
                         contentColor = Color.White
                     ) {
                         Icon(
-                            imageVector = Icons.Default.VolumeUp,
-                            contentDescription = stringResource(id = R.string.play_sound),
+                            imageVector = Icons.Default.Home,
+                            contentDescription = stringResource(id = R.string.home),
                             modifier = Modifier.size(32.dp)
                         )
                     }
                     Text(
-                        text = stringResource(id = R.string.listen_hint),
+                        text = stringResource(id = R.string.home),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(top = 8.dp)
@@ -180,7 +188,7 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(32.dp),
+                            .padding(16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Row(
@@ -189,7 +197,7 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
                         ) {
                             Text(
                                 text = stage.toString(),
-                                fontSize = 72.sp,
+                                fontSize = 40.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = gradientColors[0],
                                 modifier = Modifier
@@ -197,19 +205,19 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
                                         color = gradientColors[0].copy(alpha = 0.1f),
                                         shape = CircleShape
                                     )
-                                    .padding(16.dp)
+                                    .padding(8.dp)
                             )
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = "×",
-                                fontSize = 48.sp,
+                                fontSize = 32.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF2D3436)
                             )
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = currentIndex.toString(),
-                                fontSize = 72.sp,
+                                fontSize = 40.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = gradientColors[1],
                                 modifier = Modifier
@@ -217,19 +225,19 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
                                         color = gradientColors[1].copy(alpha = 0.1f),
                                         shape = CircleShape
                                     )
-                                    .padding(16.dp)
+                                    .padding(8.dp)
                             )
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = "=",
-                                fontSize = 48.sp,
+                                fontSize = 32.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF2D3436)
                             )
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = result.toString(),
-                                fontSize = 72.sp,
+                                fontSize = 40.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = gradientColors[2],
                                 modifier = Modifier
@@ -237,7 +245,7 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
                                         color = gradientColors[2].copy(alpha = 0.1f),
                                         shape = CircleShape
                                     )
-                                    .padding(16.dp)
+                                    .padding(8.dp)
                             )
                         }
 

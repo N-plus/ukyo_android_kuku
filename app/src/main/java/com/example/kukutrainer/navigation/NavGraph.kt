@@ -16,6 +16,9 @@ import com.example.kukutrainer.ui.quiz.QuizDifficultySelectScreen
 import com.example.kukutrainer.ui.quiz.QuizScreen
 import com.example.kukutrainer.ui.settings.SettingsScreen
 import com.example.kukutrainer.ui.profile.ProfileScreen
+import com.example.kukutrainer.ui.terms.TermsOfServiceScreen
+import androidx.compose.ui.platform.LocalContext
+import com.example.kukutrainer.data.PreferencesManager
 
 @Composable
 fun KukuNavGraph(
@@ -86,15 +89,42 @@ fun KukuNavGraph(
         composable(Screen.Profile.route) {
             ProfileScreen(navController)
         }
+        composable(Screen.TermsOfService.route) {
+            val context = LocalContext.current
+            val fromSettings = navController.previousBackStackEntry?.destination?.route == Screen.Settings.route
+            TermsOfServiceScreen(
+                onAccept = {
+                    PreferencesManager.setTermsAccepted(context, true)
+                    if (fromSettings) {
+                        navController.popBackStack()
+                    } else {
+                        val target = if (PreferencesManager.getSelectedCharacter(context) != 0) {
+                            Screen.Home.route
+                        } else {
+                            Screen.CharacterSelection.route
+                        }
+                        navController.popBackStack()
+                        navController.navigate(target)
+                    }
+                },
+                onBack = { navController.popBackStack() },
+                showBackButton = fromSettings
+            )
+        }
     }
 }
 
 private fun NavGraphBuilder.addSplash(navController: NavHostController) {
     composable(Screen.Splash.route) {
+        val context = LocalContext.current
         SplashScreen { selected ->
-            val target = if (selected) Screen.Home.route else Screen.CharacterSelection.route
             navController.popBackStack()
-            navController.navigate(target)
+            if (PreferencesManager.isTermsAccepted(context)) {
+                val target = if (selected) Screen.Home.route else Screen.CharacterSelection.route
+                navController.navigate(target)
+            } else {
+                navController.navigate(Screen.TermsOfService.route)
+            }
         }
     }
 }

@@ -57,7 +57,7 @@ fun CompletionScreen(stage: Int, navController: NavHostController) {
 
     val completionData = remember(stars, stage) {
         CompletionData(
-            categoryName = "ステージ$stage",
+            categoryName = "${stage}のスターゲット！",
             emoji = "⭐",
             completedLessons = stage,
             score = stars,
@@ -357,30 +357,13 @@ private fun StatsCards(completionData: CompletionData) {
     ) {
         StatCard(
             title = "レッスン",
-            value = "${completionData.completedLessons}",
+            value = "${completionData.completedLessons}のだん",
             subtitle = "かんりょう",
             emoji = "📚",
             color = Color(0xFF4CAF50),
             modifier = Modifier.weight(1f)
         )
 
-        StatCard(
-            title = "スコア",
-            value = "${completionData.score}",
-            subtitle = "てん",
-            emoji = "⭐",
-            color = Color(0xFFFF9800),
-            modifier = Modifier.weight(1f)
-        )
-
-        StatCard(
-            title = "じかん",
-            value = completionData.timeSpent,
-            subtitle = "",
-            emoji = "⏰",
-            color = Color(0xFF2196F3),
-            modifier = Modifier.weight(1f)
-        )
     }
 }
 

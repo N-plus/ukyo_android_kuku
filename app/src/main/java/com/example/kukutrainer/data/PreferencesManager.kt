@@ -12,9 +12,12 @@ object PreferencesManager {
     private const val KEY_SELECTED_CHARACTER = "selected_character"
     private const val KEY_SOUND_SPEED = "sound_speed"
     private const val KEY_BGM_ON = "bgm_on"
+    private const val KEY_TERMS_ACCEPTED = "terms_accepted"
+    private const val KEY_VOICE_ON = "voice_on"
 
     private fun stageCompletedKey(stage: Int) = "stage_completed_" + stage
     private fun starCountKey(stage: Int) = "star_count_" + stage
+    private fun quizCompletedKey(quiz: Int) = "quiz_completed_" + quiz
 
     private fun prefs(context: Context): SharedPreferences =
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -39,6 +42,12 @@ object PreferencesManager {
 
     fun getStarCount(context: Context, stage: Int): Int =
         prefs(context).getInt(starCountKey(stage), 0)
+    fun setQuizCompleted(context: Context, quiz: Int, completed: Boolean) {
+        prefs(context).edit().putBoolean(quizCompletedKey(quiz), completed).apply()
+    }
+
+    fun isQuizCompleted(context: Context, quiz: Int): Boolean =
+        prefs(context).getBoolean(quizCompletedKey(quiz), false)
 
     fun setSoundSpeed(context: Context, speed: Float) {
         prefs(context).edit().putFloat(KEY_SOUND_SPEED, speed).apply()
@@ -53,4 +62,18 @@ object PreferencesManager {
 
     fun isBgmOn(context: Context): Boolean =
         prefs(context).getBoolean(KEY_BGM_ON, true)
+
+    fun setTermsAccepted(context: Context, accepted: Boolean) {
+        prefs(context).edit().putBoolean(KEY_TERMS_ACCEPTED, accepted).apply()
+    }
+
+    fun isTermsAccepted(context: Context): Boolean =
+        prefs(context).getBoolean(KEY_TERMS_ACCEPTED, false)
+
+    fun setVoiceOn(context: Context, on: Boolean) {
+        prefs(context).edit().putBoolean(KEY_VOICE_ON, on).apply()
+    }
+
+    fun isVoiceOn(context: Context): Boolean =
+        prefs(context).getBoolean(KEY_VOICE_ON, true)
 }

@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.kukutrainer.data.PreferencesManager
 import com.example.kukutrainer.navigation.Screen
+import com.example.kukutrainer.audio.BgmPlayer
 
 data class SettingsState(
     val bgmEnabled: Boolean = true,
@@ -48,7 +49,7 @@ fun SettingsScreen(navController: NavHostController) {
         mutableStateOf(
             SettingsState(
                 bgmEnabled = PreferencesManager.isBgmOn(context),
-                voiceEnabled = true,
+                voiceEnabled = PreferencesManager.isVoiceOn(context),
                 selectedVoiceSpeed = PreferencesManager.getSoundSpeed(context)
             )
         )
@@ -59,9 +60,16 @@ fun SettingsScreen(navController: NavHostController) {
         onSettingsChanged = { state ->
             settingsState = state
             PreferencesManager.setBgmOn(context, state.bgmEnabled)
+            PreferencesManager.setVoiceOn(context, state.voiceEnabled)
             PreferencesManager.setSoundSpeed(context, state.selectedVoiceSpeed)
+            if (state.bgmEnabled) {
+                BgmPlayer.start(context)
+            } else {
+                BgmPlayer.stop()
+            }
         },
         onCharacterSelectionClicked = { navController.navigate(Screen.CharacterSelection.route) },
+        onTermsOfServiceClicked = { navController.navigate(Screen.TermsOfService.route) },
         onBackPressed = { navController.popBackStack() }
     )
 }
@@ -71,6 +79,7 @@ private fun SettingsContent(
     settingsState: SettingsState = SettingsState(),
     onSettingsChanged: (SettingsState) -> Unit = {},
     onCharacterSelectionClicked: () -> Unit = {},
+    onTermsOfServiceClicked: () -> Unit = {},
     onBackPressed: () -> Unit = {}
 ) {
     var currentSettings by remember { mutableStateOf(settingsState) }
@@ -152,6 +161,14 @@ private fun SettingsContent(
                             currentSettings = currentSettings.copy(soundCutEnabled = enabled)
                             onSettingsChanged(currentSettings)
                         }
+                    )
+                }
+                item {
+                    ActionSettingItem(
+                        title = "利用規約",
+                        description = "アプリの利用規約を表示",
+                        icon = Icons.Default.Description,
+                        onClick = onTermsOfServiceClicked
                     )
                 }
 
@@ -437,7 +454,7 @@ private fun ActionSettingItem(
 @Composable
 private fun SettingsScreenPreview() {
     MaterialTheme {
-        SettingsContent()
+        SettingsContent(onTermsOfServiceClicked = {})
     }
 }
 

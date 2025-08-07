@@ -6,6 +6,7 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
 import com.example.kukutrainer.R
+import com.example.kukutrainer.data.PreferencesManager
 
 /**
  * シンプルな BGM 再生ユーティリティ（シングルトン）
@@ -24,6 +25,11 @@ object BgmPlayer {
 
     /** BGM を再生／再開する */
     fun start(context: Context) {
+        if (!PreferencesManager.isBgmOn(context)) {
+            stop()
+            return
+        }
+
         // 既に生成済みならそのまま再開
         mediaPlayer?.let {
             if (!it.isPlaying) it.start()
@@ -43,6 +49,11 @@ object BgmPlayer {
             val uri = Uri.parse("android.resource://${context.packageName}/${R.raw.bgm}")
             setDataSource(context, uri)
             isLooping = true              // 無限ループ
+            setOnCompletionListener { mp ->
+                // 念のため完了時に先頭へ戻して再生し続ける
+                mp.seekTo(0)
+                mp.start()
+            }
             prepare()                     // 同期準備（大きいファイルなら prepareAsync も可）
             start()
         }

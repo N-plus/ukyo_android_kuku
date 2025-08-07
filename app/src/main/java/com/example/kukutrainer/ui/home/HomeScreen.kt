@@ -52,16 +52,18 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.kukutrainer.R
+import com.example.kukutrainer.data.PreferencesManager
 import com.example.kukutrainer.navigation.Screen
 import kotlinx.coroutines.delay
 import kotlin.math.sin
 import kotlin.random.Random
-import androidx.compose.foundation.Image
+import androidx.annotation.DrawableRes
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
@@ -80,6 +82,14 @@ fun KidsHomeScreen(
     onSettingsClick: () -> Unit = {},
     onProfileClick: () -> Unit = {}
 ) {
+    val context = LocalContext.current
+    val selectedCharacter = remember { PreferencesManager.getSelectedCharacter(context) }
+    val characterImageRes = when (selectedCharacter) {
+        1 -> R.drawable.chara1
+        2 -> R.drawable.chara2
+        3 -> R.drawable.chara3
+        else -> R.drawable.chara1
+    }
     val infiniteTransition = rememberInfiniteTransition(label = "background")
 
     val backgroundOffset by infiniteTransition.animateFloat(
@@ -137,7 +147,7 @@ fun KidsHomeScreen(
                 visible = showContent,
                 enter = slideInFromTop() + fadeIn()
             ) {
-                KidsHeader()
+                KidsHeader(imageRes = characterImageRes)
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -199,7 +209,7 @@ fun KidsHomeScreen(
 }
 
 @Composable
-fun KidsHeader() {
+fun KidsHeader(@DrawableRes imageRes: Int) {
     val bounceScale by rememberInfiniteTransition(label = "header").animateFloat(
         initialValue = 1f,
         targetValue = 1.1f,
@@ -228,7 +238,7 @@ fun KidsHeader() {
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.chara1),
+                painter = painterResource(id = imageRes),
                 contentDescription = null,
             )
         }

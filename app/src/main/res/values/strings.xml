@@ -8,6 +8,7 @@
     <string name="splash_tagline">未就学児でも学べる九九アプリ</string>
     <string name="learning_mode">学習モード</string>
     <string name="quiz_mode">クイズモード</string>
+    <string name="home">ホーム</string>
     <string name="total_stars">合計スター数: %1$d</string>
     <string name="completed_stages">クリアしたステージ: %1$d</string>
     <string name="go_to_profile">プロフィール</string>

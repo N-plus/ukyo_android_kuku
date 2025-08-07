@@ -94,15 +94,15 @@ fun CharacterSelectionScreen(navController: NavHostController) {
             name = "ピカちゃん",
             imageRes = R.drawable.chara1,
             color = Color(0xFFFFE66D),
-            description = "きらきらほし",
+            description = "かわいいきょうりゅう",
             personality = "げんきいっぱい！",
         ),
         Character(
             id = 2,
-            name = "ミントくん",
+            name = "ミントちゃん",
             imageRes = R.drawable.chara2,
             color = Color(0xFF4ECDC4),
-            description = "みどりのかえる",
+            description = "ぴんくのうさぎ",
             personality = "やさしくて　かしこい！",
         ),
         Character(
@@ -110,14 +110,14 @@ fun CharacterSelectionScreen(navController: NavHostController) {
             name = "サクラちゃん",
             imageRes = R.drawable.chara3,
             color = Color(0xFFFF6B9D),
-            description = "ピンクのはな",
+            description = "ちきゅうにきてまもないうちゅうじん",
             personality = "かわいくて　がんばりや！",
         )
     )
 
-    val initialId = PreferencesManager.getSelectedCharacter(context)
+    // No character is pre-selected when entering from settings
     var selectedCharacter by remember {
-        mutableStateOf(characters.firstOrNull { it.id == initialId })
+        mutableStateOf<Character?>(null)
     }
 
     var isVisible by remember { mutableStateOf(false) }
@@ -232,7 +232,9 @@ fun CharacterSelectionScreen(navController: NavHostController) {
             LazyColumn(
                 contentPadding = PaddingValues(vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
             ) {
                 itemsIndexed(characters) { index, character ->
                     Box(
@@ -244,7 +246,13 @@ fun CharacterSelectionScreen(navController: NavHostController) {
                             isSelected = selectedCharacter?.id == character.id,
                             isVisible = isVisible,
                             delay = (index + 1) * 300L,
-                            onClick = { selectedCharacter = character }
+                            onClick = {
+                                selectedCharacter = character
+                                PreferencesManager.setSelectedCharacter(context, character.id)
+                                navController.navigate(Screen.Home.route) {
+                                    popUpTo(Screen.CharacterSelection.route) { inclusive = true }
+                                }
+                            }
                         )
                     }
                 }

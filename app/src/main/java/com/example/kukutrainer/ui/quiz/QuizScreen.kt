@@ -57,6 +57,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,38 +67,56 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.kukutrainer.navigation.Screen
+import com.example.kukutrainer.audio.BgmPlayer
+import com.example.kukutrainer.R
 import kotlinx.coroutines.delay
 import androidx.compose.animation.core.rememberInfiniteTransition
+import android.media.MediaPlayer
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 
 @Composable
 fun QuizScreen(difficulty: Int, navController: NavHostController) {
-    val range = when (difficulty) {
-        1 -> 1..3
-        2 -> 1..6
-        else -> 1..9
+    val questions = remember {
+        (1..9).flatMap { l -> (1..9).map { r -> l to r } }.shuffled()
     }
 
-    var left by remember { mutableStateOf(range.random()) }
-    var right by remember { mutableStateOf(range.random()) }
-    var options by remember { mutableStateOf(generateOptions(left, right, range)) }
+    var currentIndex by remember { mutableStateOf(0) }
     var currentQuestion by remember { mutableStateOf(1) }
-    val totalQuestions = 10
+    val totalQuestions = questions.size
+    val (left, right) = questions[currentIndex]
+    val options = remember(left, right) { generateOptions(left, right, 1..9) }
+    var answerText by remember { mutableStateOf("") }
     var selectedAnswer by remember { mutableStateOf<Int?>(null) }
     var showFeedback by remember { mutableStateOf(false) }
     val haptic = LocalHapticFeedback.current
+    val context = LocalContext.current
+
+    DisposableEffect(Unit) {
+        BgmPlayer.stop()
+        onDispose {
+            BgmPlayer.start(context)
+        }
+    }
 
     fun nextQuestion() {
-        currentQuestion++
-        left = range.random()
-        right = range.random()
-        options = generateOptions(left, right, range)
+        if (currentIndex < questions.lastIndex) {
+            currentIndex++
+            currentQuestion++
+        } else {
+            navController.navigate(Screen.Home.route)
+        }
         selectedAnswer = null
+        answerText = ""
     }
 
     val animatedGradient = remember { Animatable(0f) }
@@ -134,25 +153,42 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             QuizProgressSection(currentQuestion, totalQuestions)
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             QuestionSection(left, right)
 
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            AnswerOptionsSection(
-                answers = options,
-                selectedAnswer = selectedAnswer,
-                onAnswerClick = { answer ->
-                    selectedAnswer = answer
-                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    showFeedback = true
+            when (difficulty) {
+                1 -> {
+                    AnswerOptionsSection(
+                        answers = options,
+                        selectedAnswer = selectedAnswer,
+                        onAnswerClick = { answer ->
+                            selectedAnswer = answer
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            showFeedback = true
+                        }
+                    )
                 }
-            )
+                else -> {
+                    AnswerInputSection(
+                        answerText = answerText,
+                        onAnswerChange = { answerText = it },
+                        onSubmit = {
+                            selectedAnswer = answerText.toIntOrNull()
+                            if (selectedAnswer != null) {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                showFeedback = true
+                            }
+                        }
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -164,10 +200,9 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
         if (showFeedback) {
             FeedbackAnimation(
                 isCorrect = selectedAnswer == left * right,
+                correctAnswer = left * right,
                 onAnimationEnd = {
-                    if (selectedAnswer == left * right) {
-                        nextQuestion()
-                    }
+                    nextQuestion()
                     showFeedback = false
                 }
             )
@@ -298,7 +333,7 @@ fun QuizProgressSection(current: Int, total: Int) {
                         imageVector = Icons.Default.School,
                         contentDescription = null,
                         tint = Color.White,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
@@ -337,7 +372,7 @@ fun QuestionSection(left: Int, right: Int) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(30.dp),
+                    .padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
@@ -347,20 +382,20 @@ fun QuestionSection(left: Int, right: Int) {
                     NumberBubble(left.toString(), Color(0xFFFF6B9D))
                     Text(
                         text = "×",
-                        fontSize = 36.sp,
+                        fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF4ECDC4)
                     )
                     NumberBubble(right.toString(), Color(0xFFFFE66D))
                     Text(
                         text = "=",
-                        fontSize = 36.sp,
+                        fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF4ECDC4)
                     )
                     Text(
                         text = "?",
-                        fontSize = 48.sp,
+                        fontSize = 32.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF95E1D3)
                     )
@@ -386,7 +421,7 @@ fun NumberBubble(number: String, color: Color) {
 
     Box(
         modifier = Modifier
-            .size(60.dp)
+            .size(48.dp)
             .scale(bounce.value)
             .background(color = color, shape = CircleShape)
             .clip(CircleShape),
@@ -521,29 +556,21 @@ fun HomeButton(onClick: () -> Unit) {
         Card(
             modifier = Modifier
                 .clickable { onClick() }
-                .padding(horizontal = 40.dp),
+                .padding(horizontal = 25.dp),
             shape = RoundedCornerShape(25.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFF8E24AA)
+                containerColor = Color(0xFF696569)
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
             Row(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.Home,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
+                Text("🏠", fontSize = 16.sp)
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "ホームにもどる",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    text = "メニューにもどる",
+                    fontSize = 16.sp
                 )
             }
         }
@@ -553,6 +580,7 @@ fun HomeButton(onClick: () -> Unit) {
 @Composable
 fun FeedbackAnimation(
     isCorrect: Boolean,
+    correctAnswer: Int,
     onAnimationEnd: () -> Unit
 ) {
     var visible by remember { mutableStateOf(true) }
@@ -584,7 +612,7 @@ fun FeedbackAnimation(
                     containerColor = if (isCorrect) Color(0xFF4CAF50) else Color(0xFFFF5722)
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
-                modifier = Modifier.size(120.dp)
+                modifier = Modifier.size(140.dp)
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -605,8 +633,70 @@ fun FeedbackAnimation(
                             fontWeight = FontWeight.Bold,
                             color = Color.White
                         )
+                        if (!isCorrect) {
+                            Text(
+                                text = "せいかいは $correctAnswer",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun AnswerInputSection(
+    answerText: String,
+    onAnswerChange: (String) -> Unit,
+    onSubmit: () -> Unit
+) {
+    var inputVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        delay(800)
+        inputVisible = true
+    }
+
+    AnimatedVisibility(
+        visible = inputVisible,
+        enter = slideInVertically(
+            initialOffsetY = { it },
+            animationSpec = tween(600, easing = FastOutSlowInEasing)
+        ) + fadeIn(animationSpec = tween(600))
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            OutlinedTextField(
+                value = answerText,
+                onValueChange = { onAnswerChange(it.filter { ch -> ch.isDigit() }) },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Card(
+                modifier = Modifier
+                    .clickable { onSubmit() },
+                shape = RoundedCornerShape(25.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color(0xFF8E24AA)
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            ) {
+                Text(
+                    text = "こたえる",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }

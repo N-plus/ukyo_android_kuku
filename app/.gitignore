@@ -1,1 +1,4 @@
 /build
+/designsystem/build/
+/app/build/
+/**/build/

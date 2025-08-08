@@ -153,19 +153,6 @@ private fun SettingsContent(
                 item { SettingsSectionTitle("その他") }
 
                 item {
-                    SwitchSettingItem(
-                        title = "音声切替（準備中）",
-                        description = "音声の種類を変更する機能",
-                        icon = Icons.Default.Settings,
-                        checked = currentSettings.soundCutEnabled,
-                        enabled = false,
-                        onCheckedChange = { enabled ->
-                            currentSettings = currentSettings.copy(soundCutEnabled = enabled)
-                            onSettingsChanged(currentSettings)
-                        }
-                    )
-                }
-                item {
                     ActionSettingItem(
                         title = "お子様を大切に想う、ママパパへ",
                         description = "開発者からのメッセージ",

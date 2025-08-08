@@ -95,9 +95,11 @@ fun KukuNavGraph(
             val diff = backStackEntry.arguments?.getInt(Screen.QuizResult.KEY_DIFFICULTY) ?: 0
             val correct = backStackEntry.arguments?.getInt(Screen.QuizResult.KEY_CORRECT) ?: 0
             val total = backStackEntry.arguments?.getInt(Screen.QuizResult.KEY_TOTAL) ?: 0
+            val duration = backStackEntry.arguments?.getLong(Screen.QuizResult.KEY_DURATION) ?: 0L
             QuizResultScreen(
                 correctAnswers = correct,
                 totalQuestions = total,
+                quizDurationMillis = duration,
                 onRetry = { navController.navigate(Screen.Quiz.createRoute(diff)) },
                 onHome = { navController.navigate(Screen.Home.route) },
                 onNextStage = { navController.navigate(Screen.Quiz.createRoute(diff + 1)) }

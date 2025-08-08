@@ -14,7 +14,7 @@ object PreferencesManager {
     private const val KEY_BGM_ON = "bgm_on"
     private const val KEY_TERMS_ACCEPTED = "terms_accepted"
     private const val KEY_VOICE_ON = "voice_on"
-
+    private const val KEY_TOTAL_STUDY_TIME = "total_study_time"
     private fun stageCompletedKey(stage: Int) = "stage_completed_" + stage
     private fun starCountKey(stage: Int) = "star_count_" + stage
     private fun quizCompletedKey(quiz: Int) = "quiz_completed_" + quiz
@@ -76,4 +76,12 @@ object PreferencesManager {
 
     fun isVoiceOn(context: Context): Boolean =
         prefs(context).getBoolean(KEY_VOICE_ON, true)
+
+    fun addStudyTime(context: Context, millis: Long) {
+        val total = getTotalStudyTime(context) + millis
+        prefs(context).edit().putLong(KEY_TOTAL_STUDY_TIME, total).apply()
+    }
+
+    fun getTotalStudyTime(context: Context): Long =
+        prefs(context).getLong(KEY_TOTAL_STUDY_TIME, 0L)
 }

@@ -341,9 +341,8 @@ fun CharacterSelectionScreen(navController: NavHostController) {
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
-
             selectedCharacter?.let { character ->
+                Spacer(modifier = Modifier.weight(1f))
                 AnimatedVisibility(
                     visible = true,
                     enter = scaleIn(

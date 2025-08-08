@@ -105,6 +105,7 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
     val haptic = LocalHapticFeedback.current
     val context = LocalContext.current
     var correctAnswers by remember { mutableStateOf(0) }
+    val startTime = remember { System.currentTimeMillis() }
 
     DisposableEffect(Unit) {
         BgmPlayer.stop()
@@ -119,9 +120,10 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
             currentQuestion++
         } else {
             PreferencesManager.setQuizCompleted(context, difficulty, true)
+            val duration = System.currentTimeMillis() - startTime
             navController.navigate(
-                Screen.QuizResult.createRoute(difficulty, correctAnswers, totalQuestions)
-            )
+                Screen.QuizResult.createRoute(difficulty, correctAnswers, totalQuestions, duration)
+                )
         }
         selectedAnswer = null
         answerText = ""

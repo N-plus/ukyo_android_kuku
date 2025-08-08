@@ -29,17 +29,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.delay
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun QuizResultScreen(
     correctAnswers: Int = 8,
     totalQuestions: Int = 10,
+    quizDurationMillis: Long = 0L,
     onRetry: () -> Unit = {},
     onHome: () -> Unit = {},
     onNextStage: () -> Unit = {}
 ) {
     var isVisible by remember { mutableStateOf(false) }
     var showConfetti by remember { mutableStateOf(false) }
+
+// クイズにかかった時間を整形
+    val quizTime = remember(quizDurationMillis) {
+        val totalSeconds = quizDurationMillis / 1000
+        val minutes = totalSeconds / 60
+        val seconds = totalSeconds % 60
+        if (minutes > 0) String.format("%d分%d秒", minutes, seconds)
+        else String.format("%d秒", seconds)
+    }
 
     // 正解率を計算
     val scorePercentage = (correctAnswers.toFloat() / totalQuestions * 100).toInt()
@@ -225,6 +237,16 @@ fun QuizResultScreen(
                                 textAlign = TextAlign.Center
                             )
                         }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // クイズにかかった時間を表示
+                        Text(
+                            text = "クイズにかかった時間: $quizTime",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color(0xFF2D3436)
+                        )
                     }
                 }
             }
@@ -459,6 +481,7 @@ fun QuizResultScreenPreview() {
     QuizResultScreen(
         correctAnswers = 10,
         totalQuestions = 10,
+        quizDurationMillis = 75_000L,
         onRetry = {},
         onHome = {},
         onNextStage = {}

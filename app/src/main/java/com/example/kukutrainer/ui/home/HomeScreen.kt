@@ -265,9 +265,10 @@ fun KidsHeader(@DrawableRes imageRes: Int, userName: String) {
         )
 
         Text(
-            text = "きょうも いっしょに あそぼうね",
+            text = "きょうも いっしょに がんばろうね！",
             fontSize = 16.sp,
-            color = Color(0xFF34495E),
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFFD073E3),
             textAlign = TextAlign.Center
         )
     }

@@ -7,6 +7,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -103,33 +105,34 @@ fun ProfileScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
                 .scale(bounceAnim),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             NameInputSection()
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             CharacterSection(characterInfo)
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             BadgeSection(badges)
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             QuizStatusSection(easyQuizCleared, hardQuizCleared)
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             StudyTimeSection()
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(16.dp))
 
             HomeButton { navController.navigate(Screen.Home.route) }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
@@ -149,7 +152,7 @@ private fun NameInputSection() {
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -159,7 +162,7 @@ private fun NameInputSection() {
                 color = Color(0xFF1976D2)
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
                 value = name,
@@ -168,7 +171,7 @@ private fun NameInputSection() {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Button(
                 onClick = {
@@ -212,7 +215,7 @@ private fun CharacterSection(info: Pair<String, Int>?) {
     ) {
         Column(
             modifier = Modifier
-                .padding(20.dp)
+                .padding(16.dp)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -224,7 +227,7 @@ private fun CharacterSection(info: Pair<String, Int>?) {
                     .scale(characterScale)
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = info.first,
@@ -379,7 +382,7 @@ private fun QuizStatusItem(title: String, isCleared: Boolean, emoji: String) {
                     Color.Gray.copy(alpha = 0.3f),
                 RoundedCornerShape(16.dp)
             )
-            .padding(16.dp)
+            .padding(12.dp)
     ) {
         Text(
             text = emoji,
@@ -474,7 +477,7 @@ private fun HomeButton(onClick: () -> Unit) {
             onClick()
         },
         modifier = Modifier
-            .size(80.dp)
+            .size(72.dp)
             .scale(buttonScale),
         shape = CircleShape,
         colors = ButtonDefaults.buttonColors(
@@ -489,7 +492,7 @@ private fun HomeButton(onClick: () -> Unit) {
             imageVector = Icons.Default.Home,
             contentDescription = "ホーム",
             tint = Color.White,
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(28.dp)
         )
     }
 

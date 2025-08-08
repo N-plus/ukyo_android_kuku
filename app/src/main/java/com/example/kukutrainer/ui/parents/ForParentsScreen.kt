@@ -159,7 +159,7 @@ fun ForParentsScreen(onNavigateBack: () -> Unit = {}) {
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "いつもお子さまの\"学び\"を支えてくださる\nお父さま、お母さまへ",
+                                text = "いつも、こどもの\n\"学び\"を支えている\nママ、パパへ",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF424242),

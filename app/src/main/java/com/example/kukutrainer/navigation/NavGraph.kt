@@ -89,8 +89,9 @@ fun KukuNavGraph(
             arguments = listOf(
                 navArgument(Screen.QuizResult.KEY_DIFFICULTY) { type = NavType.IntType },
                 navArgument(Screen.QuizResult.KEY_CORRECT) { type = NavType.IntType },
-                navArgument(Screen.QuizResult.KEY_TOTAL) { type = NavType.IntType }
-            )
+                navArgument(Screen.QuizResult.KEY_TOTAL) { type = NavType.IntType },
+                navArgument(Screen.QuizResult.KEY_DURATION) { type = NavType.LongType }
+                      )
         ) { backStackEntry ->
             val diff = backStackEntry.arguments?.getInt(Screen.QuizResult.KEY_DIFFICULTY) ?: 0
             val correct = backStackEntry.arguments?.getInt(Screen.QuizResult.KEY_CORRECT) ?: 0

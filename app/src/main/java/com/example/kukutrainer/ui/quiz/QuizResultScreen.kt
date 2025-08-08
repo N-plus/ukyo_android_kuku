@@ -65,7 +65,7 @@ fun QuizResultScreen(
             "パーフェクト！\nすごいすごい！！",
             "🎉",
             Color(0xFFFFD700), // ゴールド
-            listOf("🎉", "✨", "🌟", "👏", "🎊")
+            listOf("🌸", "💮", "🌺", "🌼", "💐")
         )
         isGoodScore -> Tuple4(
             "とってもよくできました！\nすばらしい！",

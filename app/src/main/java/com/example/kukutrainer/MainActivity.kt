@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         BgmPlayer.start(this)
         startTime = System.currentTimeMillis()
+        PreferencesManager.setSessionStartTime(this, startTime)
     }
 
     override fun onDestroy() {

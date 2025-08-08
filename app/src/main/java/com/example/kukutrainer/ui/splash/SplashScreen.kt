@@ -48,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 
 import androidx.compose.ui.unit.sp
@@ -89,6 +90,39 @@ fun SplashScreen(onFinished: (Boolean) -> Unit) {
             repeatMode = RepeatMode.Reverse
         ),
         label = "bounce"
+    )
+    val titleColorShift by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(8000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "titleColorShift"
+    )
+
+    val titleScale by infiniteTransition.animateFloat(
+        initialValue = 0.9f,
+        targetValue = 1.1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "titleScale"
+    )
+
+    val titleBrush = Brush.linearGradient(
+        colors = listOf(
+            Color(0xFFFF0000),
+            Color(0xFFFFA500),
+            Color(0xFFFFFF00),
+            Color(0xFF00FF00),
+            Color(0xFF0000FF),
+            Color(0xFF4B0082),
+            Color(0xFFEE82EE)
+        ),
+        start = Offset(titleColorShift, 0f),
+        end = Offset(titleColorShift + 300f, 0f)
     )
 
     var showTitle by remember { mutableStateOf(false) }
@@ -161,24 +195,40 @@ fun SplashScreen(onFinished: (Boolean) -> Unit) {
                 enter = scaleIn(animationSpec = tween(800, easing = FastOutSlowInEasing)) + fadeIn()
             ) {
                 Text(
+                    modifier = Modifier.scale(titleScale),
                     text = "MISHUKUKU",
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF6A4C93),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = Color.Unspecified,
+                    style = TextStyle(brush = titleBrush)
                 )
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             AnimatedVisibility(
                 visible = showSubtitle,
                 enter = scaleIn(animationSpec = tween(600, easing = FastOutSlowInEasing)) + fadeIn()
             ) {
                 Text(
-                    text = "たのしく まなぼう！",
-                    fontSize = 18.sp,
-                    color = Color(0xFF0070F3),
+                    text = "未就学児用　九九アプリ",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = Color(0xFFEFEFEF),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            AnimatedVisibility(
+                visible = showSubtitle,
+                enter = scaleIn(animationSpec = tween(600, easing = FastOutSlowInEasing)) + fadeIn()
+            ) {
+                Text(
+                    text = "たのしく九九をまなぼう！",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = Color(0xFFF39200),
                     textAlign = TextAlign.Center
                 )
             }

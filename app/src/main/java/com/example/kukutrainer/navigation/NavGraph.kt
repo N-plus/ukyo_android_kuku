@@ -15,10 +15,12 @@ import com.example.kukutrainer.ui.learning.CompletionScreen
 import com.example.kukutrainer.ui.quiz.QuizDifficultySelectScreen
 import com.example.kukutrainer.ui.quiz.QuizScreen
 import com.example.kukutrainer.ui.settings.SettingsScreen
+import com.example.kukutrainer.ui.quiz.QuizResultScreen
 import com.example.kukutrainer.ui.profile.ProfileScreen
 import com.example.kukutrainer.ui.terms.TermsOfServiceScreen
 import androidx.compose.ui.platform.LocalContext
 import com.example.kukutrainer.data.PreferencesManager
+import com.example.kukutrainer.ui.parents.ForParentsScreen
 
 @Composable
 fun KukuNavGraph(
@@ -82,9 +84,31 @@ fun KukuNavGraph(
                 ?.getInt(Screen.Quiz.KEY_DIFFICULTY) ?: 0
             QuizScreen(diff, navController)
         }
+        composable(
+            route = Screen.QuizResult.route,
+            arguments = listOf(
+                navArgument(Screen.QuizResult.KEY_DIFFICULTY) { type = NavType.IntType },
+                navArgument(Screen.QuizResult.KEY_CORRECT) { type = NavType.IntType },
+                navArgument(Screen.QuizResult.KEY_TOTAL) { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val diff = backStackEntry.arguments?.getInt(Screen.QuizResult.KEY_DIFFICULTY) ?: 0
+            val correct = backStackEntry.arguments?.getInt(Screen.QuizResult.KEY_CORRECT) ?: 0
+            val total = backStackEntry.arguments?.getInt(Screen.QuizResult.KEY_TOTAL) ?: 0
+            QuizResultScreen(
+                correctAnswers = correct,
+                totalQuestions = total,
+                onRetry = { navController.navigate(Screen.Quiz.createRoute(diff)) },
+                onHome = { navController.navigate(Screen.Home.route) },
+                onNextStage = { navController.navigate(Screen.Quiz.createRoute(diff + 1)) }
+            )
+        }
 
         composable(Screen.Settings.route) {
             SettingsScreen(navController)
+        }
+        composable(Screen.ForParents.route) {
+            ForParentsScreen { navController.popBackStack() }
         }
         composable(Screen.Profile.route) {
             ProfileScreen(navController)

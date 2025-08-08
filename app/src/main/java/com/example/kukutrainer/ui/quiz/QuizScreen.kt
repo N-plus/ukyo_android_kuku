@@ -81,13 +81,17 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import android.media.MediaPlayer
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import com.example.kukutrainer.audio.playFeedbackSound
+import com.example.kukutrainer.data.PreferencesManager
 
 @Composable
 fun QuizScreen(difficulty: Int, navController: NavHostController) {
     val questions = remember {
-        (1..9).flatMap { l -> (1..9).map { r -> l to r } }.shuffled()
+        (1..9).flatMap { l -> (1..9).map { r -> l to r } }.shuffled().take(10)
     }
 
     var currentIndex by remember { mutableStateOf(0) }
@@ -100,6 +104,7 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
     var showFeedback by remember { mutableStateOf(false) }
     val haptic = LocalHapticFeedback.current
     val context = LocalContext.current
+    var correctAnswers by remember { mutableStateOf(0) }
 
     DisposableEffect(Unit) {
         BgmPlayer.stop()
@@ -113,7 +118,10 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
             currentIndex++
             currentQuestion++
         } else {
-            navController.navigate(Screen.Home.route)
+            PreferencesManager.setQuizCompleted(context, difficulty, true)
+            navController.navigate(
+                Screen.QuizResult.createRoute(difficulty, correctAnswers, totalQuestions)
+            )
         }
         selectedAnswer = null
         answerText = ""
@@ -202,6 +210,9 @@ fun QuizScreen(difficulty: Int, navController: NavHostController) {
                 isCorrect = selectedAnswer == left * right,
                 correctAnswer = left * right,
                 onAnimationEnd = {
+                    if (selectedAnswer == left * right) {
+                        correctAnswers++
+                    }
                     nextQuestion()
                     showFeedback = false
                 }
@@ -557,25 +568,40 @@ fun HomeButton(onClick: () -> Unit) {
             modifier = Modifier
                 .clickable { onClick() }
                 .padding(horizontal = 25.dp),
-            shape = RoundedCornerShape(25.dp),
+            shape = RoundedCornerShape(50),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFF696569)
+                containerColor = Color.Transparent
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier
+                    .background(
+                        Brush.horizontalGradient(
+                            listOf(Color(0xFF4FC3F7), Color(0xFF0288D1))
+                        )
+                    )
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
-                Text("🏠", fontSize = 16.sp)
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = null,
+                    tint = Color.White
+                )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "メニューにもどる",
-                    fontSize = 16.sp
+                    text = "ホームへ戻る",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
                 )
             }
         }
     }
 }
+
 
 @Composable
 fun FeedbackAnimation(
@@ -584,8 +610,9 @@ fun FeedbackAnimation(
     onAnimationEnd: () -> Unit
 ) {
     var visible by remember { mutableStateOf(true) }
-
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
+        playFeedbackSound(context, isCorrect)
         delay(2000)
         visible = false
         delay(300)
@@ -677,7 +704,13 @@ fun AnswerInputSection(
                 onValueChange = { onAnswerChange(it.filter { ch -> ch.isDigit() }) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    disabledContainerColor = Color.White,
+                    errorContainerColor = Color.White
+                )
             )
             Spacer(modifier = Modifier.height(16.dp))
             Card(

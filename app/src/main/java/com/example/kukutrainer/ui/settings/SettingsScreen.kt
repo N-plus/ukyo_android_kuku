@@ -69,6 +69,7 @@ fun SettingsScreen(navController: NavHostController) {
             }
         },
         onCharacterSelectionClicked = { navController.navigate(Screen.CharacterSelection.route) },
+        onForParentsClicked = { navController.navigate(Screen.ForParents.route) },
         onTermsOfServiceClicked = { navController.navigate(Screen.TermsOfService.route) },
         onBackPressed = { navController.popBackStack() }
     )
@@ -79,6 +80,7 @@ private fun SettingsContent(
     settingsState: SettingsState = SettingsState(),
     onSettingsChanged: (SettingsState) -> Unit = {},
     onCharacterSelectionClicked: () -> Unit = {},
+    onForParentsClicked: () -> Unit = {},
     onTermsOfServiceClicked: () -> Unit = {},
     onBackPressed: () -> Unit = {}
 ) {
@@ -161,6 +163,14 @@ private fun SettingsContent(
                             currentSettings = currentSettings.copy(soundCutEnabled = enabled)
                             onSettingsChanged(currentSettings)
                         }
+                    )
+                }
+                item {
+                    ActionSettingItem(
+                        title = "お子様を大切に想う、ママパパへ",
+                        description = "開発者からのメッセージ",
+                        icon = Icons.Default.Favorite,
+                        onClick = onForParentsClicked
                     )
                 }
                 item {
@@ -454,7 +464,7 @@ private fun ActionSettingItem(
 @Composable
 private fun SettingsScreenPreview() {
     MaterialTheme {
-        SettingsContent(onTermsOfServiceClicked = {})
+        SettingsContent(onForParentsClicked = {}, onTermsOfServiceClicked = {})
     }
 }
 

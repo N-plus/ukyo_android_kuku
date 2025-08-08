@@ -2,6 +2,7 @@ package com.example.kukutrainer.audio
 
 import android.content.Context
 import android.media.MediaPlayer
+import com.example.kukutrainer.R
 
 /**
  * Plays a recorded multiplication sound from the raw resources.
@@ -26,3 +27,20 @@ fun playRecordedKuku(context: Context, left: Int, right: Int): Boolean {
         false
     }
 }
+    /**
+     * Plays a simple feedback sound to indicate whether the answer was
+     * correct or incorrect. The sound resource is released automatically
+     * after playback finishes.
+     */
+    fun playFeedbackSound(context: Context, isCorrect: Boolean) {
+        val resId = if (isCorrect) R.raw.pinpon else R.raw.bubu
+        val player = MediaPlayer.create(context, resId)
+        player?.setOnCompletionListener { mp ->
+            mp.release()
+        }
+        try {
+            player?.start()
+        } catch (e: Exception) {
+            player?.release()
+        }
+    }

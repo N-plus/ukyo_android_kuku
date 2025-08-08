@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -50,6 +51,7 @@ import com.example.kukutrainer.data.PreferencesManager
 import com.example.kukutrainer.navigation.Screen
 import kotlinx.coroutines.delay
 import androidx.compose.foundation.layout.height
+import android.widget.Toast
 
 @Composable
 fun ProfileScreen(navController: NavHostController) {
@@ -105,6 +107,10 @@ fun ProfileScreen(navController: NavHostController) {
                 .scale(bounceAnim),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            NameInputSection()
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             CharacterSection(characterInfo)
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -124,6 +130,54 @@ fun ProfileScreen(navController: NavHostController) {
             HomeButton { navController.navigate(Screen.Home.route) }
 
             Spacer(modifier = Modifier.height(20.dp))
+        }
+    }
+}
+
+@Composable
+private fun NameInputSection() {
+    val context = LocalContext.current
+    var name by remember { mutableStateOf(PreferencesManager.getUserName(context)) }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp)),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White.copy(alpha = 0.9f)
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "きみのなまえをおしえてね",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1976D2)
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Button(
+                onClick = {
+                    PreferencesManager.setUserName(context, name)
+                    Toast.makeText(context, "とうろくできたよ", Toast.LENGTH_SHORT).show()
+                }
+            ) {
+                Text("とうろく")
+            }
         }
     }
 }
@@ -350,9 +404,24 @@ private fun QuizStatusItem(title: String, isCleared: Boolean, emoji: String) {
 @Composable
 private fun StudyTimeSection() {
     val context = LocalContext.current
-    val totalMillis = PreferencesManager.getTotalStudyTime(context)
+    var totalMillis by remember { mutableStateOf(0L) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            val sessionStart = PreferencesManager.getSessionStartTime(context)
+            val currentSession = if (sessionStart > 0L) {
+                System.currentTimeMillis() - sessionStart
+            } else {
+                0L
+            }
+            totalMillis = PreferencesManager.getTotalStudyTime(context) + currentSession
+            delay(1000)
+        }
+    }
+
     val hours = totalMillis / 3_600_000
     val minutes = (totalMillis / 60_000) % 60
+    val seconds = (totalMillis / 1_000) % 60
 
     Card(
         modifier = Modifier
@@ -376,7 +445,7 @@ private fun StudyTimeSection() {
             )
 
             Text(
-                text = "${hours}じかん ${minutes}ぷん",
+                text = "${hours}じかん ${minutes}ぷん ${seconds}びょう",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF4CAF50)

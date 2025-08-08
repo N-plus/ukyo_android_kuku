@@ -84,6 +84,7 @@ fun KidsHomeScreen(
 ) {
     val context = LocalContext.current
     val selectedCharacter = remember { PreferencesManager.getSelectedCharacter(context) }
+    val userName = remember { PreferencesManager.getUserName(context) }
     val characterImageRes = when (selectedCharacter) {
         1 -> R.drawable.chara1
         2 -> R.drawable.chara2
@@ -147,7 +148,7 @@ fun KidsHomeScreen(
                 visible = showContent,
                 enter = slideInFromTop() + fadeIn()
             ) {
-                KidsHeader(imageRes = characterImageRes)
+                KidsHeader(imageRes = characterImageRes, userName = userName)
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -209,7 +210,7 @@ fun KidsHomeScreen(
 }
 
 @Composable
-fun KidsHeader(@DrawableRes imageRes: Int) {
+fun KidsHeader(@DrawableRes imageRes: Int, userName: String) {
     val bounceScale by rememberInfiniteTransition(label = "header").animateFloat(
         initialValue = 1f,
         targetValue = 1.1f,
@@ -245,8 +246,19 @@ fun KidsHeader(@DrawableRes imageRes: Int) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        if (userName.isNotBlank()) {
+            Text(
+                text = "${userName}ちゃん",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF2C3E50)
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
         Text(
-            text = "おかえりなさい！",
+            text = if (userName.isBlank()) "ようこそ！" else "おかえりなさい！",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFF2C3E50)

@@ -18,6 +18,14 @@ sealed class Screen(val route: String) {
         const val KEY_DIFFICULTY = "difficulty"
         fun createRoute(diff: Int) = "quiz/$diff"
     }
+    data object QuizResult : Screen("quiz_result/{difficulty}/{correct}/{total}") {
+        const val KEY_DIFFICULTY = "difficulty"
+        const val KEY_CORRECT = "correct"
+        const val KEY_TOTAL = "total"
+        fun createRoute(diff: Int, correct: Int, total: Int) =
+            "quiz_result/$diff/$correct/$total"
+    }
+    data object ForParents : Screen("for_parents")
     data object Settings : Screen("settings")
     data object Profile : Screen("profile")
     data object TermsOfService : Screen("terms_of_service")

@@ -46,9 +46,12 @@ import java.util.Locale
 @Composable
 fun LearningScreen(stage: Int, navController: NavHostController) {
     val context = LocalContext.current
+    val voiceEnabled = PreferencesManager.isVoiceOn(context)
     var currentIndex by remember { mutableStateOf(1) }
     var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
-    val tts = remember { TextToSpeech(context) { } }
+    val tts = remember {
+        if (voiceEnabled) TextToSpeech(context) { } else null
+    }
 
     // result of current problem
     val result = stage * currentIndex
@@ -80,11 +83,8 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
         )
     )
 
-    if (!PreferencesManager.isVoiceOn(context)) {
-        return
-    }
-
     fun playAudio() {
+        if (!voiceEnabled) return
         mediaPlayer?.release()
         if (!playRecordedKuku(context, stage, currentIndex)) {
             val text = context.getString(
@@ -93,9 +93,9 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
                 currentIndex,
                 result
             )
-            tts.language = Locale.JAPANESE
-            tts.setSpeechRate(PreferencesManager.getSoundSpeed(context))
-            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+            tts?.language = Locale.JAPANESE
+            tts?.setSpeechRate(PreferencesManager.getSoundSpeed(context))
+            tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
         }
     }
 
@@ -113,7 +113,7 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
     DisposableEffect(Unit) {
         BgmPlayer.stop()
         onDispose {
-            tts.shutdown()
+            tts?.shutdown()
             mediaPlayer?.release()
             BgmPlayer.start(context)
         }

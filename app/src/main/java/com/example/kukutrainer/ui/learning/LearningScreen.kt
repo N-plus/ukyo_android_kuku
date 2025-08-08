@@ -118,8 +118,14 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
             BgmPlayer.start(context)
         }
     }
+    // Play the audio for the first problem and on each index change
     LaunchedEffect(Unit) {
         playAudio()
+    }
+    LaunchedEffect(currentIndex) {
+        if (currentIndex > 1) {
+            playAudio()
+        }
     }
 
     Box(

@@ -1,4 +1,4 @@
-package com.example.kukutrainer
+package com.ukyo.kukutrainer
 
 import org.junit.Test
 

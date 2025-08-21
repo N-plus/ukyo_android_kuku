@@ -5,21 +5,30 @@ plugins {
 }
 
 android {
-    namespace = "com.example.kukutrainer"
+    namespace = "com.ukyo.kukutrainer"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.kukutrainer"
+        applicationId = "com.ukyo.kukutrainer"
         minSdk = 30
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 4
+        versionName = "1.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    signingConfigs {
+        create("releaseUpload") {
+            // あなたが Play Console に登録した upload-keystore のパス
+            storeFile = file("../keystores/key_android.jks")
+            storePassword = "Akanna77"
+            keyAlias = "key0"
+            keyPassword = "Akanna77"
+        }
+    }
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("releaseUpload")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -37,7 +46,7 @@ android {
     buildFeatures {
         compose = true
     }
-    namespace = "com.example.kukutrainer"
+    namespace = "com.ukyo.kukutrainer"
 }
 
 dependencies {

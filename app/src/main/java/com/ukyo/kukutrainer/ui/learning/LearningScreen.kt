@@ -86,12 +86,28 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
     fun playAudio() {
         if (!voiceEnabled) return
         mediaPlayer?.let { mp ->
-            if (mp.isPlaying) {
-                mp.stop()
+            try {
+                if (mp.isPlaying) {
+                    mp.stop()
+                }
+            } catch (e: IllegalStateException) {
+                // MediaPlayer was already released
             }
-            mp.release()
+            try {
+                mp.release()
+            } catch (e: IllegalStateException) {
+                // Ignore if already released
+            }
+            mediaPlayer = null
         }
-        mediaPlayer = playRecordedKuku(context, stage, currentIndex)
+        mediaPlayer = playRecordedKuku(context, stage, currentIndex)?.also { player ->
+            player.setOnCompletionListener { completed ->
+                completed.release()
+                if (mediaPlayer == completed) {
+                    mediaPlayer = null
+                }
+            }
+        }
         if (mediaPlayer == null) {
             val text = context.getString(
                 R.string.learning_expression_format,
@@ -129,6 +145,7 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
         onDispose {
             tts?.shutdown()
             mediaPlayer?.release()
+            mediaPlayer = null
             BgmPlayer.start(context)
         }
     }

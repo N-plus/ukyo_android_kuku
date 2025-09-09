@@ -85,8 +85,14 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
 
     fun playAudio() {
         if (!voiceEnabled) return
-        mediaPlayer?.release()
-        if (!playRecordedKuku(context, stage, currentIndex)) {
+        mediaPlayer?.let { mp ->
+            if (mp.isPlaying) {
+                mp.stop()
+            }
+            mp.release()
+        }
+        mediaPlayer = playRecordedKuku(context, stage, currentIndex)
+        if (mediaPlayer == null) {
             val text = context.getString(
                 R.string.learning_expression_format,
                 stage,
@@ -100,6 +106,14 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
     }
 
     fun nextProblem() {
+        tts?.stop()
+        mediaPlayer?.let { mp ->
+            if (mp.isPlaying) {
+                mp.stop()
+            }
+            mp.release()
+            mediaPlayer = null
+        }
         if (currentIndex < 9) {
             currentIndex++
         } else {

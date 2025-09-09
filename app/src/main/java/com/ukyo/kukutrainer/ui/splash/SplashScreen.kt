@@ -210,7 +210,7 @@ fun SplashScreen(onFinished: (Boolean) -> Unit) {
                 enter = scaleIn(animationSpec = tween(600, easing = FastOutSlowInEasing)) + fadeIn()
             ) {
                 Text(
-                    text = "未就学児用　九九アプリ",
+                    text = "はじめての九九向け学習アプリ",
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     color = Color(0xFFEFEFEF),

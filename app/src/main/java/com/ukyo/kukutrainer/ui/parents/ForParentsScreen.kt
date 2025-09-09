@@ -180,7 +180,7 @@ fun ForParentsScreen(onNavigateBack: () -> Unit = {}) {
                         Text(
                             text = """はじめまして。「MISHUKUKU」開発者の松崎と申します。
 
-私も未就学児を育てる父親として、毎日の子育てに奮闘しています。
+私も父親として、毎日の子育てに奮闘しています。
 
 私は子供に「楽しみながら学んでほしい」　―　そんな想いでこのアプリを個人でつくりました。
 
@@ -324,7 +324,7 @@ fun ForParentsScreen(onNavigateBack: () -> Unit = {}) {
 
                         InfoRow(label = "アプリ名", value = "MISHUKUKU（みしゅくく）")
                         InfoRow(label = "バージョン", value = "1.0.0")
-                        InfoRow(label = "対象年齢", value = "未就学児（3歳〜6歳）")
+                        InfoRow(label = "対象年齢", value = "4歳〜8歳")
                         InfoRow(label = "料金", value = "完全無料（広告なし）")
                         InfoRow(label = "開発者", value = "松崎（個人開発）")
                     }

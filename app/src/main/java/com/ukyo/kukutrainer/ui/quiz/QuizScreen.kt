@@ -85,6 +85,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.ui.text.TextStyle
 import com.ukyo.kukutrainer.audio.playFeedbackSound
 import com.ukyo.kukutrainer.data.PreferencesManager
 
@@ -706,7 +707,17 @@ fun AnswerInputSection(
                 onValueChange = { onAnswerChange(it.filter { ch -> ch.isDigit() }) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth(),
+                placeholder = {
+                    Text(
+                        text = "こたえをここににゅうりょくしてね",
+                        color = Color.LightGray,
+                        fontSize = 24.sp
+                    )
+                },
+                textStyle = TextStyle(fontSize = 24.sp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(84.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,

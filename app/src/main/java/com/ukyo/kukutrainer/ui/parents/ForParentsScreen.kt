@@ -13,7 +13,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -40,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.delay
+import com.ukyo.kukutrainer.audio.clickableWithSound
+import com.ukyo.kukutrainer.audio.withClickSound
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -98,7 +99,7 @@ fun ForParentsScreen(onNavigateBack: () -> Unit = {}) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(
-                        onClick = onNavigateBack,
+                        onClick = withClickSound(onNavigateBack),
                         modifier = Modifier
                             .size(48.dp)
                             .background(Color.White.copy(alpha = 0.9f), CircleShape)
@@ -239,7 +240,7 @@ fun ForParentsScreen(onNavigateBack: () -> Unit = {}) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .shadow(6.dp, RoundedCornerShape(12.dp))
-                        .clickable { openPlayStore() },
+                        .clickableWithSound { openPlayStore() },
                     shape = RoundedCornerShape(12.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFFFF6F00))
                 ) {

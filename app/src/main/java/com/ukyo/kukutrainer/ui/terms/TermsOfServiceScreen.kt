@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ukyo.kukutrainer.audio.withClickSound
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +54,7 @@ fun TermsOfServiceScreen(
             },
             navigationIcon = {
                 if (showBackButton) {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = withClickSound(onBack)) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "戻る")
                     }
                 }
@@ -97,7 +98,7 @@ fun TermsOfServiceScreen(
                 }
 
                 Button(
-                    onClick = onAccept,
+                    onClick = withClickSound(onAccept),
                     enabled = hasScrolledToBottom,
                     modifier = Modifier
                         .fillMaxWidth()

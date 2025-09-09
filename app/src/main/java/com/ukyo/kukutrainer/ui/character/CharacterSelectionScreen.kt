@@ -28,8 +28,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -142,8 +140,6 @@ fun CharacterSelectionScreen(navController: NavHostController) {
         ),
         label = "floating"
     )
-    val scrollState = rememberScrollState()
-
     LaunchedEffect(Unit) {
         delay(200)
         isVisible = true
@@ -233,30 +229,23 @@ fun CharacterSelectionScreen(navController: NavHostController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .verticalScroll(scrollState)
                     .padding(vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 characters.forEachIndexed { index, character ->
-
-            Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CharacterCard(
-                            character = character,
-                            isSelected = selectedCharacter?.id == character.id,
-                            isVisible = isVisible,
-                            delay = (index + 1) * 300L,
-                            onClick = {
-                                selectedCharacter = character
-                                PreferencesManager.setSelectedCharacter(context, character.id)
-                                navController.navigate(Screen.Home.route) {
-                                    popUpTo(Screen.CharacterSelection.route) { inclusive = true }
-                                }
+                    CharacterCard(
+                        character = character,
+                        isSelected = selectedCharacter?.id == character.id,
+                        isVisible = isVisible,
+                        delay = (index + 1) * 300L,
+                        onClick = {
+                            selectedCharacter = character
+                            PreferencesManager.setSelectedCharacter(context, character.id)
+                            navController.navigate(Screen.Home.route) {
+                                popUpTo(Screen.CharacterSelection.route) { inclusive = true }
                             }
-                        )
-                    }
+                        }
+                    )
                 }
             }
 
@@ -428,8 +417,8 @@ fun CharacterCard(
     ) {
         Card(
             modifier = Modifier
-                .width(200.dp)
-                .height(280.dp)
+                .fillMaxWidth()
+                .height(120.dp)
                 .scale(if (isSelected) bounceScale else 1f)
                 .shadow(
                     elevation = if (isSelected) 12.dp else 6.dp,
@@ -446,75 +435,65 @@ fun CharacterCard(
                 containerColor = Color.White
             )
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                character.color.copy(alpha = 0.1f),
-                                Color.White
+            Box(modifier = Modifier.fillMaxSize()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(
+                                    character.color.copy(alpha = 0.1f),
+                                    Color.White
+                                )
                             )
                         )
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = character.imageRes),
+                        contentDescription = character.name,
+                        modifier = Modifier.size(80.dp)
                     )
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Column(
+                        modifier = Modifier.fillMaxHeight(),
+                        verticalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = character.name,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = character.color
+                        )
+
+                        Text(
+                            text = character.description,
+                            fontSize = 14.sp,
+                            color = Color(0xFF636E72)
+                        )
+                    }
+                }
+
                 if (isSelected) {
                     Box(
                         modifier = Modifier
-                            .size(32.dp)
-                            .background(
-                                color = character.color,
-                                shape = CircleShape
-                            ),
+                            .align(Alignment.TopEnd)
+                            .padding(8.dp)
+                            .size(24.dp)
+                            .background(color = character.color, shape = CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.Check,
                             contentDescription = "選択済み",
                             tint = Color.White,
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(16.dp)
                         )
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
                 }
-
-                Image(
-                    painter = painterResource(id = character.imageRes),
-                    contentDescription = character.name,
-                    modifier = Modifier.size(80.dp)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = character.name,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = character.color,
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = character.description,
-                    fontSize = 14.sp,
-                    color = Color(0xFF636E72),
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    text = character.personality,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF2D3436),
-                    textAlign = TextAlign.Center
-                )
             }
         }
     }

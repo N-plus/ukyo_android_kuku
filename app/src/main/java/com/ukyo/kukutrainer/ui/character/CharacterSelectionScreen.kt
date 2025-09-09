@@ -459,7 +459,7 @@ fun CharacterCard(
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Column(
-                        modifier = Modifier.fillMaxHeight(),
+                        modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(

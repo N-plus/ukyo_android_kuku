@@ -31,9 +31,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.MusicOff
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,7 +63,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ukyo.kukutrainer.R
+import com.ukyo.kukutrainer.audio.BgmPlayer
 import com.ukyo.kukutrainer.audio.clickableWithSound
+import com.ukyo.kukutrainer.audio.withClickSound
 import com.ukyo.kukutrainer.data.PreferencesManager
 import com.ukyo.kukutrainer.navigation.Screen
 import kotlinx.coroutines.delay
@@ -114,6 +122,7 @@ fun KidsHomeScreen(
     )
 
     var showContent by remember { mutableStateOf(false) }
+    var bgmEnabled by remember { mutableStateOf(PreferencesManager.isBgmOn(context)) }
 
     LaunchedEffect(Unit) {
         delay(300)
@@ -135,6 +144,30 @@ fun KidsHomeScreen(
     ) {
         FloatingClouds(cloudOffset)
         FloatingSparkles(backgroundOffset)
+
+        IconButton(
+            onClick = withClickSound {
+                bgmEnabled = !bgmEnabled
+                PreferencesManager.setBgmOn(context, bgmEnabled)
+                if (bgmEnabled) {
+                    BgmPlayer.start(context)
+                } else {
+                    BgmPlayer.stop()
+                }
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+                .size(48.dp)
+                .background(color = Color.White, shape = CircleShape)
+                .shadow(4.dp, CircleShape)
+        ) {
+            Icon(
+                imageVector = if (bgmEnabled) Icons.Default.MusicNote else Icons.Default.MusicOff,
+                contentDescription = if (bgmEnabled) "BGM オフ" else "BGM オン",
+                tint = Color(0xFF37474F)
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -162,6 +195,13 @@ fun KidsHomeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     KidsMenuButton(
+                        text = "プロフィール",
+                        emoji = "👤",
+                        colors = listOf(Color(0xFFD4EF5E), Color(0xFFEFB747)),
+                        onClick = onProfileClick
+                    )
+
+                    KidsMenuButton(
                         text = "くくをまなぶ",
                         emoji = "📚",
                         colors = listOf(Color(0xFFFF6B9D), Color(0xFFFF8E9B)),
@@ -180,13 +220,6 @@ fun KidsHomeScreen(
                         emoji = "⚙️",
                         colors = listOf(Color(0xFFFFBE0B), Color(0xFFF39F17)),
                         onClick = onSettingsClick
-                    )
-
-                    KidsMenuButton(
-                        text = "プロフィール",
-                        emoji = "👤",
-                        colors = listOf(Color(0xFFD4EF5E), Color(0xFFEFB747)),
-                        onClick = onProfileClick
                     )
                 }
             }

@@ -56,6 +56,7 @@ import com.ukyo.kukutrainer.data.PreferencesManager
 import com.ukyo.kukutrainer.R
 import kotlinx.coroutines.delay
 import kotlin.random.Random
+import com.ukyo.kukutrainer.audio.withClickSound
 
 @Composable
 fun SplashScreen(onFinished: (Boolean) -> Unit) {
@@ -240,7 +241,7 @@ fun SplashScreen(onFinished: (Boolean) -> Unit) {
                 enter = scaleIn(animationSpec = tween(600, easing = FastOutSlowInEasing)) + fadeIn()
             ) {
                 Button(
-                    onClick = { onFinished(isCharacterSelected(context)) },
+                    onClick = withClickSound { onFinished(isCharacterSelected(context)) },
                     modifier = Modifier
                         .padding(horizontal = 32.dp)
                         .height(56.dp),

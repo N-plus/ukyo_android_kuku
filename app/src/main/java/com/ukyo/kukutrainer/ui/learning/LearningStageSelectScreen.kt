@@ -15,7 +15,6 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -38,6 +37,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.ukyo.kukutrainer.audio.clickableWithSound
+import com.ukyo.kukutrainer.audio.withClickSound
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.compose.ui.tooling.preview.Preview
@@ -105,7 +106,7 @@ fun LearningStageSelectScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 FloatingActionButton(
-                    onClick = onNavigateBack,
+                    onClick = withClickSound(onNavigateBack),
                     modifier = Modifier.size(48.dp),
                     containerColor = Color.White,
                     contentColor = Color(0xFF2D3436)
@@ -238,7 +239,7 @@ private fun StageButton(
                     elevation = if (isPressed) 4.dp else 8.dp,
                     shape = RoundedCornerShape(20.dp)
                 )
-                .clickable {
+                .clickableWithSound {
                     isPressed = true
                     onClick()
                 },

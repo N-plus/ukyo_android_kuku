@@ -20,7 +20,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ukyo.kukutrainer.R
+import com.ukyo.kukutrainer.audio.clickableWithSound
 import com.ukyo.kukutrainer.data.PreferencesManager
 import com.ukyo.kukutrainer.navigation.Screen
 import kotlinx.coroutines.delay
@@ -306,7 +306,7 @@ fun KidsMenuButton(
             .fillMaxWidth()
             .height(80.dp)
             .scale(scale)
-            .clickable {
+            .clickableWithSound {
                 isPressed = true
                 onClick()
             }

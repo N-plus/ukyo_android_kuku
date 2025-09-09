@@ -6,7 +6,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ukyo.kukutrainer.data.PreferencesManager
 import com.ukyo.kukutrainer.navigation.Screen
+import com.ukyo.kukutrainer.audio.withClickSound
 import kotlinx.coroutines.delay
 import kotlin.math.cos
 import kotlin.math.sin
@@ -482,7 +482,7 @@ private fun ActionButtons(
     ) {
         onNextLessonClicked?.let {
             Button(
-                onClick = it,
+                onClick = withClickSound(it),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
@@ -512,7 +512,7 @@ private fun ActionButtons(
         }
 
         OutlinedButton(
-            onClick = onBackToMenuClicked,
+            onClick = withClickSound(onBackToMenuClicked),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),

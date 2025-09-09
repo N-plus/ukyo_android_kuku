@@ -196,28 +196,28 @@ fun KidsHomeScreen(
                 ) {
                     KidsMenuButton(
                         text = "プロフィール",
-                        emoji = "👤",
+                        emoji = "\uD83D\uDC27",
                         colors = listOf(Color(0xFFD4EF5E), Color(0xFFEFB747)),
                         onClick = onProfileClick
                     )
 
                     KidsMenuButton(
                         text = "くくをまなぶ",
-                        emoji = "📚",
+                        emoji = "\uD83E\uDD84",
                         colors = listOf(Color(0xFFFF6B9D), Color(0xFFFF8E9B)),
                         onClick = onStudyModeClick
                     )
 
                     KidsMenuButton(
                         text = "クイズ",
-                        emoji = "🎯",
+                        emoji = "\uD83D\uDC07",
                         colors = listOf(Color(0xFF4ECDC4), Color(0xFF44A08D)),
                         onClick = onQuizModeClick
                     )
 
                     KidsMenuButton(
                         text = "せってい",
-                        emoji = "⚙️",
+                        emoji = "\uD83E\uDD8B",
                         colors = listOf(Color(0xFFFFBE0B), Color(0xFFF39F17)),
                         onClick = onSettingsClick
                     )

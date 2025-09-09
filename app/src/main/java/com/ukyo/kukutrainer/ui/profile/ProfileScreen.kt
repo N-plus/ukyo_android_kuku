@@ -450,7 +450,7 @@ private fun StudyTimeSection() {
 
             Text(
                 text = "${hours}じかん ${minutes}ぷん ${seconds}びょう",
-                fontSize = 28.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF4CAF50)
             )

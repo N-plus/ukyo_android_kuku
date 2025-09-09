@@ -54,6 +54,7 @@ import com.ukyo.kukutrainer.navigation.Screen
 import kotlinx.coroutines.delay
 import androidx.compose.foundation.layout.height
 import android.widget.Toast
+import com.ukyo.kukutrainer.audio.withClickSound
 
 @Composable
 fun ProfileScreen(navController: NavHostController) {
@@ -174,7 +175,7 @@ private fun NameInputSection() {
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(
-                onClick = {
+                onClick = withClickSound {
                     PreferencesManager.setUserName(context, name)
                     Toast.makeText(context, "とうろくできたよ", Toast.LENGTH_SHORT).show()
                 }
@@ -472,7 +473,7 @@ private fun HomeButton(onClick: () -> Unit) {
     )
 
     Button(
-        onClick = {
+        onClick = withClickSound {
             isPressed = true
             onClick()
         },

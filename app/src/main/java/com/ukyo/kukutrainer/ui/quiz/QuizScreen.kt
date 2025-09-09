@@ -21,7 +21,6 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -76,6 +75,7 @@ import androidx.navigation.NavHostController
 import com.ukyo.kukutrainer.navigation.Screen
 import com.ukyo.kukutrainer.audio.BgmPlayer
 import com.ukyo.kukutrainer.R
+import com.ukyo.kukutrainer.audio.clickableWithSound
 import kotlinx.coroutines.delay
 import androidx.compose.animation.core.rememberInfiniteTransition
 import android.media.MediaPlayer
@@ -523,7 +523,7 @@ fun AnswerButton(
             .fillMaxWidth()
             .height(70.dp)
             .scale(scale)
-            .clickable { onClick() },
+            .clickableWithSound { onClick() },
         shape = RoundedCornerShape(35.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = if (isSelected) 2.dp else 8.dp
@@ -568,7 +568,7 @@ fun HomeButton(onClick: () -> Unit) {
     ) {
         Card(
             modifier = Modifier
-                .clickable { onClick() }
+                .clickableWithSound { onClick() }
                 .padding(horizontal = 25.dp),
             shape = RoundedCornerShape(50),
             colors = CardDefaults.cardColors(
@@ -717,7 +717,7 @@ fun AnswerInputSection(
             Spacer(modifier = Modifier.height(16.dp))
             Card(
                 modifier = Modifier
-                    .clickable { onSubmit() },
+                    .clickableWithSound { onSubmit() },
                 shape = RoundedCornerShape(25.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color(0xFF8E24AA)

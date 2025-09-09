@@ -6,7 +6,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ukyo.kukutrainer.data.PreferencesManager
 import com.ukyo.kukutrainer.navigation.Screen
+import com.ukyo.kukutrainer.audio.withClickSound
 import kotlinx.coroutines.delay
 import kotlin.math.cos
 import kotlin.math.sin
@@ -66,9 +66,15 @@ fun CompletionScreen(stage: Int, navController: NavHostController) {
         )
     }
 
+    val nextLesson: (() -> Unit)? = if (stage < 9) {
+        { navController.navigate(Screen.Learning.createRoute(stage + 1)) }
+    } else {
+        null
+    }
+
     CompletionContent(
         completionData = completionData,
-        onNextLessonClicked = { navController.navigate(Screen.Learning.createRoute(stage + 1)) },
+        onNextLessonClicked = nextLesson,
         onBackToMenuClicked = { navController.navigate(Screen.Home.route) }
     )
 }
@@ -79,7 +85,7 @@ fun CompletionScreen(stage: Int, navController: NavHostController) {
 @Composable
 fun CompletionContent(
     completionData: CompletionData,
-    onNextLessonClicked: () -> Unit = {},
+    onNextLessonClicked: (() -> Unit)? = null,
     onBackToMenuClicked: () -> Unit = {}
 ) {
     // Animation states
@@ -467,44 +473,46 @@ private fun NewBadgesSection(badges: List<String>) {
 
 @Composable
 private fun ActionButtons(
-    onNextLessonClicked: () -> Unit,
+    onNextLessonClicked: (() -> Unit)?,
     onBackToMenuClicked: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Button(
-            onClick = onNextLessonClicked,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .shadow(8.dp, RoundedCornerShape(28.dp)),
-            shape = RoundedCornerShape(28.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF4CAF50)
-            )
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+        onNextLessonClicked?.let {
+            Button(
+                onClick = withClickSound(it),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .shadow(8.dp, RoundedCornerShape(28.dp)),
+                shape = RoundedCornerShape(28.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF4CAF50)
+                )
             ) {
-                Text(
-                    text = "つぎのレッスン",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "🚀",
-                    fontSize = 20.sp
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "つぎのレッスン",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "🚀",
+                        fontSize = 20.sp
+                    )
+                }
             }
         }
 
         OutlinedButton(
-            onClick = onBackToMenuClicked,
+            onClick = withClickSound(onBackToMenuClicked),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),

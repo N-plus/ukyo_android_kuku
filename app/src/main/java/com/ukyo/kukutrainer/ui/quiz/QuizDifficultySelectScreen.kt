@@ -4,7 +4,6 @@ package com.ukyo.kukutrainer.ui.quiz
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ukyo.kukutrainer.navigation.Screen
 import kotlinx.coroutines.delay
+import com.ukyo.kukutrainer.audio.clickableWithSound
 
 enum class QuizDifficulty(
     val title: String,
@@ -214,7 +214,7 @@ private fun DifficultyButton(
                 shape = RoundedCornerShape(24.dp),
                 spotColor = difficulty.color.copy(alpha = 0.25f)
             )
-            .clickable {
+            .clickableWithSound {
                 isPressed = true
                 onClick()
             },
@@ -313,7 +313,7 @@ private fun BackButton(onClick: () -> Unit) {
                 elevation = 4.dp,
                 shape = RoundedCornerShape(20.dp)
             )
-            .clickable {
+            .clickableWithSound {
                 isPressed = true
                 onClick()
             },

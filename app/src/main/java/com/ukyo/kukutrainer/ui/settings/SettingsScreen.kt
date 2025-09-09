@@ -7,7 +7,6 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -34,6 +33,8 @@ import androidx.navigation.NavHostController
 import com.ukyo.kukutrainer.data.PreferencesManager
 import com.ukyo.kukutrainer.navigation.Screen
 import com.ukyo.kukutrainer.audio.BgmPlayer
+import com.ukyo.kukutrainer.audio.clickableWithSound
+import com.ukyo.kukutrainer.audio.withClickSound
 
 data class SettingsState(
     val bgmEnabled: Boolean = true,
@@ -182,7 +183,7 @@ private fun SettingsHeader(onBackPressed: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            onClick = onBackPressed,
+            onClick = withClickSound(onBackPressed),
             modifier = Modifier
                 .size(48.dp)
                 .background(color = Color.White, shape = CircleShape)
@@ -266,7 +267,7 @@ private fun SwitchSettingItem(
                 elevation = if (enabled) 4.dp else 2.dp,
                 shape = RoundedCornerShape(16.dp)
             )
-            .clickable(enabled = enabled) {
+            .clickableWithSound(enabled = enabled) {
                 isPressed = true
                 onCheckedChange(!checked)
             },
@@ -375,7 +376,7 @@ private fun ActionSettingItem(
             .fillMaxWidth()
             .scale(scale)
             .shadow(elevation = 4.dp, shape = RoundedCornerShape(16.dp))
-            .clickable {
+            .clickableWithSound {
                 isPressed = true
                 onClick()
             },

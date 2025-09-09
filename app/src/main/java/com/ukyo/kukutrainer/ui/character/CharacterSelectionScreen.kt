@@ -16,7 +16,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -64,6 +63,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ukyo.kukutrainer.audio.clickableWithSound
+import com.ukyo.kukutrainer.audio.withClickSound
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ukyo.kukutrainer.R
@@ -164,7 +165,7 @@ fun CharacterSelectionScreen(navController: NavHostController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 FloatingActionButton(
-                    onClick = { navController.popBackStack() },
+                    onClick = withClickSound { navController.popBackStack() },
                     modifier = Modifier.size(48.dp),
                     containerColor = Color.White,
                     contentColor = Color(0xFF2D3436)
@@ -353,7 +354,7 @@ fun CharacterSelectionScreen(navController: NavHostController) {
                     ) + fadeIn()
                 ) {
                     Button(
-                        onClick = {
+                        onClick = withClickSound {
                             PreferencesManager.setSelectedCharacter(context, character.id)
                             navController.navigate(Screen.Home.route) {
                                 popUpTo(Screen.CharacterSelection.route) { inclusive = true }
@@ -439,7 +440,7 @@ fun CharacterCard(
                     color = character.color,
                     shape = RoundedCornerShape(24.dp)
                 )
-                .clickable { onClick() },
+                .clickableWithSound { onClick() },
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color.White

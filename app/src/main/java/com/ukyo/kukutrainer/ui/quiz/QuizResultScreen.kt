@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import com.ukyo.kukutrainer.audio.withClickSound
 
 @Composable
 fun QuizResultScreen(
@@ -266,7 +267,7 @@ fun QuizResultScreen(
                     // パーフェクトスコアの場合は次のステージボタン
                     if (isPerfectScore) {
                         Button(
-                            onClick = onNextStage,
+                            onClick = withClickSound(onNextStage),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(56.dp)
@@ -299,7 +300,7 @@ fun QuizResultScreen(
                         // もう一度ボタン
                         if (!isPerfectScore) {
                             Button(
-                                onClick = onRetry,
+                                onClick = withClickSound(onRetry),
                                 modifier = Modifier
                                     .weight(1f)
                                     .height(56.dp)
@@ -327,7 +328,7 @@ fun QuizResultScreen(
 
                         // ホームボタン
                         Button(
-                            onClick = onHome,
+                            onClick = withClickSound(onHome),
                             modifier = Modifier
                                 .weight(1f)
                                 .height(56.dp)

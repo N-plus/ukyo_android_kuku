@@ -40,7 +40,6 @@ import com.ukyo.kukutrainer.audio.BgmPlayer
 import com.ukyo.kukutrainer.audio.playRecordedKuku
 import com.ukyo.kukutrainer.data.PreferencesManager
 import com.ukyo.kukutrainer.navigation.Screen
-import com.ukyo.kukutrainer.audio.withClickSound
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -162,7 +161,7 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     FloatingActionButton(
-                        onClick = withClickSound { navController.navigate(Screen.Home.route) },
+                        onClick = { navController.navigate(Screen.Home.route) },
                         modifier = Modifier
                             .size(64.dp)
                             .scale(homeButtonScale),
@@ -298,7 +297,7 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 FloatingActionButton(
-                    onClick = withClickSound { playAudio() },
+                    onClick = { playAudio() },
                     modifier = Modifier.size(64.dp),
                     containerColor = Color(0xFF4ECDC4),
                     contentColor = Color.White
@@ -311,7 +310,7 @@ fun LearningScreen(stage: Int, navController: NavHostController) {
                 }
 
                 FloatingActionButton(
-                    onClick = withClickSound { nextProblem() },
+                    onClick = { nextProblem() },
                     modifier = Modifier.size(64.dp),
                     containerColor = Color(0xFFFFE66D),
                     contentColor = Color(0xFF2D3436)

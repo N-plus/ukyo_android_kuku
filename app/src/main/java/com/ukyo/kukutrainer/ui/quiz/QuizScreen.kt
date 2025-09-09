@@ -711,7 +711,7 @@ fun AnswerInputSection(
                     Text(
                         text = "こたえをここににゅうりょくしてね",
                         color = Color.LightGray,
-                        fontSize = 24.sp
+                        fontSize = 20.sp
                     )
                 },
                 textStyle = TextStyle(fontSize = 24.sp),

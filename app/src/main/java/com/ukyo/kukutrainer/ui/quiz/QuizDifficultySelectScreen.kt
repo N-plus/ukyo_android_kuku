@@ -41,8 +41,8 @@ enum class QuizDifficulty(
     val secondaryColor: Color,
     val emoji: String
 ) {
-    EASY("かんたん", "こたえを４つからえらぶよ", Color(0xFF4CAF50), Color(0xFF81C784), "🐣"),
-    HARD("むずかしい", "こたえをにゅうりょくするよ", Color(0xFFFF9800), Color(0xFFFFB74D), "🦁")
+    EASY("かんたん", "４つからえらぶよ", Color(0xFF4CAF50), Color(0xFF81C784), "🐣"),
+    HARD("むずかしい", "にゅうりょくだよ", Color(0xFFFF9800), Color(0xFFFFB74D), "🦁")
 }
 
 @Composable
